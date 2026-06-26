@@ -1,8 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>MyMap Dusun Kerban</title>
+@extends('layouts.public')
 
+@section('styles')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 
     <style>
@@ -12,29 +10,17 @@
         }
 
         #map {
-            height: 100vh;
+            height: calc(100vh - 56px);
             width: 100%;
         }
-
-        .title {
-            position: absolute;
-            z-index: 9999;
-            background: white;
-            padding: 10px;
-            margin: 10px;
-            border-radius: 8px;
-            font-family: Arial;
-        }
     </style>
-</head>
-<body>
+@endsection
 
-<div class="title">
-    🗺️ MyMap Dusun Kerban
-</div>
-
+@section('content')
 <div id="map"></div>
+@endsection
 
+@section('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <script>
@@ -47,7 +33,15 @@
     L.marker([-7.8, 110.3]).addTo(map)
         .bindPopup("Dusun Kerban")
         .openPopup();
-</script>
 
-</body>
-</html>
+    // Map title control — bottom left
+    var titleControl = L.control({ position: 'bottomleft' });
+    titleControl.onAdd = function () {
+        var div = L.DomUtil.create('div', 'map-title');
+        div.innerHTML = '🗺️ MyMap Dusun Kerban';
+        div.style.cssText = 'background: white; padding: 6px 12px; border-radius: 6px; font-weight: bold; font-family: Arial; font-size: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.2);';
+        return div;
+    };
+    titleControl.addTo(map);
+</script>
+@endsection
