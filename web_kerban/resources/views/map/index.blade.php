@@ -17,13 +17,18 @@
             width: 100%;
         }
 
-        /* Custom draw toolbar styling */
+        /* Push draw toolbar below the fixed navbar */
         .leaflet-draw-toolbar {
-            margin-top: 0;
+            margin-top: 56px;
         }
 
         .leaflet-draw-toolbar a {
             background-color: #fff;
+        }
+
+        /* Layer control — push below navbar too */
+        .leaflet-control-layers {
+            margin-top: 56px;
         }
 
         .draw-instruction {
@@ -83,7 +88,7 @@
     // DRAW CONTROLS
     // =============================================
     var drawControl = new L.Control.Draw({
-        position: 'topright',
+        position: 'topleft',
         draw: {
             polygon: {
                 allowIntersection: false,
@@ -282,7 +287,7 @@
         "Layer Gambar": drawnItems
     };
 
-    L.control.layers(baseMaps, overlayMaps, { position: 'topright', collapsed: false }).addTo(map);
+    L.control.layers(baseMaps, overlayMaps, { position: 'bottomright', collapsed: false }).addTo(map);
 
     // =============================================
     // TITLE CONTROL
