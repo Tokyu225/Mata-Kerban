@@ -8,12 +8,40 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
+    <style>
+        /* Navbar — translucent at top, solid on scroll */
+        .navbar-custom {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1050;
+            transition: background-color 0.4s ease, box-shadow 0.4s ease;
+            background-color: transparent;
+            box-shadow: none;
+        }
+
+        .navbar-custom.scrolled {
+            background-color: #198754 !important; /* bg-success */
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        }
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: white !important;
+        }
+
+        body {
+            padding-top: 0;
+        }
+    </style>
+
     @yield('styles')
 </head>
 <body>
 
-{{-- NAVBAR --}}
-<nav class="navbar navbar-expand-lg navbar-dark bg-success px-4">
+{{-- NAVBAR — translucent → solid on scroll --}}
+<nav class="navbar navbar-expand-lg navbar-custom px-4" id="mainNavbar">
     <a class="navbar-brand fw-bold" href="/">Desa Kerban</a>
 
     <div class="ms-auto">
@@ -24,6 +52,18 @@
 
 {{-- CONTENT --}}
 @yield('content')
+
+{{-- SCROLL SCRIPT --}}
+<script>
+    window.addEventListener('scroll', function () {
+        var navbar = document.getElementById('mainNavbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+</script>
 
 @yield('scripts')
 </body>

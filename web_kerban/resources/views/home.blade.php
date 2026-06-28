@@ -8,7 +8,7 @@
     }
 
     .hero {
-        height: 85vh;
+        height: 100vh;
         background: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef') center/cover;
         position: relative;
         display: flex;
@@ -27,6 +27,30 @@
     .hero-content {
         position: relative;
         text-align: center;
+    }
+
+    /* Fade-in animation */
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero-content h1 {
+        animation: fadeInUp 1s ease-out 0.2s both;
+    }
+
+    .hero-content p {
+        animation: fadeInUp 1s ease-out 0.5s both;
+    }
+
+    .hero-content .btn {
+        animation: fadeInUp 1s ease-out 0.8s both;
     }
 
     .card-menu {
