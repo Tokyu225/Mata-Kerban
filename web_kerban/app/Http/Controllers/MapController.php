@@ -16,8 +16,8 @@ class MapController extends Controller
     // simpan data dari leaflet draw
     public function store(Request $request)
     {
-        MapLayer::create([
-            'name' => 'Objek Baru',
+        $layer = MapLayer::create([
+            'name' => $request->name ?? 'Objek Baru',
             'type' => $request->type ?? 'polygon',
             'geojson' => $request->geojson,
             'category' => $request->category ?? 'umum'
@@ -25,7 +25,20 @@ class MapController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Data berhasil disimpan'
+            'message' => 'Data berhasil disimpan',
+            'id' => $layer->id
+        ]);
+    }
+
+    // hapus layer
+    public function destroy($id)
+    {
+        $layer = MapLayer::findOrFail($id);
+        $layer->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data berhasil dihapus'
         ]);
     }
 
@@ -37,12 +50,16 @@ class MapController extends Controller
         $features = [];
 
         foreach ($layers as $layer) {
-
             if (!$layer->geojson) continue;
+
+            // geojson is stored as geometry JSON string, decode it
+            $geometry = is_string($layer->geojson) ? json_decode($layer->geojson, true) : $layer->geojson;
+
+            if (!$geometry) continue;
 
             $features[] = [
                 "type" => "Feature",
-                "geometry" => $layer->geojson["geometry"] ?? null,
+                "geometry" => $geometry,
                 "properties" => [
                     "id" => $layer->id,
                     "name" => $layer->name,
