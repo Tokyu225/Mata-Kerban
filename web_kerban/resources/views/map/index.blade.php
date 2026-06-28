@@ -70,7 +70,12 @@
     // =============================================
     // INIT MAP
     // =============================================
-    var map = L.map('map').setView([-7.8, 110.3], 15);
+    var map = L.map('map', {
+        zoomControl: false
+    }).setView([-7.8, 110.3], 15);
+
+    // Zoom — topright (away from draw toolbar at topleft)
+    L.control.zoom({ position: 'topright' }).addTo(map);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors | MyMap Dusun Kerban'
