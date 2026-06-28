@@ -17,7 +17,7 @@
             width: 100%;
             z-index: 1050;
             transition: background-color 0.4s ease, box-shadow 0.4s ease;
-            background-color: rgba(0,0,0,0.45);
+            background-color: rgba(25, 135, 84, 0.55);
             box-shadow: none;
             backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
