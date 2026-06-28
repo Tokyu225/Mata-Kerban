@@ -59,6 +59,59 @@
 
 <script>
     // =============================================
+    // LOCALIZATION — Leaflet.draw in Indonesian
+    // =============================================
+    L.drawLocal = {
+        draw: {
+            toolbar: {
+                actions: { title: 'Batal', text: 'Batal' },
+                finish: { title: 'Selesai', text: 'Selesai' },
+                undo:   { title: 'Hapus titik terakhir', text: 'Hapus titik terakhir' },
+                buttons: {
+                    polyline:  'Garis',
+                    polygon:   'Poligon',
+                    rectangle: 'Persegi',
+                    circle:    'Lingkaran',
+                    marker:    'Titik',
+                    circlemarker: 'Titik lingkaran'
+                }
+            },
+            handlers: {
+                circle:    { tooltip: { start: 'Klik & seret untuk membuat lingkaran.' }, radius: 'Radius' },
+                circlemarker: { tooltip: { start: 'Klik peta untuk menempatkan titik.' } },
+                marker:    { tooltip: { start: 'Klik peta untuk menempatkan titik.' } },
+                polygon:   { tooltip: { start: 'Klik untuk mulai menggambar.', cont: 'Klik untuk melanjutkan.', end: 'Klik titik pertama untuk menutup.' } },
+                polyline:  { error: '<strong>Error:</strong> garis tidak boleh tumpang tindih!', tooltip: { start: 'Klik untuk mulai menggambar garis.', cont: 'Klik untuk melanjutkan.', end: 'Klik titik terakhir untuk selesai.' } },
+                rectangle: { tooltip: { start: 'Klik & seret untuk membuat persegi.' } },
+                simpleshape: { tooltip: { end: 'Lepaskan mouse untuk selesai.' } }
+            }
+        },
+        edit: {
+            toolbar: {
+                actions: {
+                    save:   { title: 'Simpan perubahan', text: 'Simpan' },
+                    cancel: { title: 'Batal', text: 'Batal' },
+                    clearAll: { title: 'Hapus semua layer', text: 'Hapus Semua' }
+                },
+                buttons: {
+                    edit:      'Edit layer',
+                    editDisabled: 'Tidak ada layer untuk diedit',
+                    remove:    'Hapus layer',
+                    removeDisabled: 'Tidak ada layer untuk dihapus'
+                }
+            },
+            handlers: {
+                edit: {
+                    tooltip: { text: 'Seret handle atau titik untuk mengedit.', subtext: 'Klik Batal untuk membatalkan.' }
+                },
+                remove: {
+                    tooltip: { text: 'Klik objek untuk menghapus.' }
+                }
+            }
+        }
+    };
+
+    // =============================================
     // INIT MAP
     // =============================================
     var map = L.map('map', {
@@ -69,7 +122,7 @@
     L.control.zoom({ position: 'topright' }).addTo(map);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors | MyMap Dusun Kerban'
+        attribution: '&copy; OpenStreetMap | MyMap Dusun Kerban'
     }).addTo(map);
 
     // =============================================
@@ -276,11 +329,11 @@
 
     var baseMaps = {
         "Peta Jalan": osm,
-        "Satelit": satellite
+        "Citra Satelit": satellite
     };
 
     var overlayMaps = {
-        "Layer Gambar": drawnItems
+        "Data GIS": drawnItems
     };
 
     L.control.layers(baseMaps, overlayMaps, { position: 'bottomright', collapsed: false }).addTo(map);
