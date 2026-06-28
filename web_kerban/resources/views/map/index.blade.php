@@ -17,23 +17,9 @@
             width: 100%;
         }
 
-        /* Push draw toolbar below the fixed navbar */
-        .leaflet-draw-toolbar {
-            margin-top: 56px;
-        }
-
-        .leaflet-draw-toolbar a {
-            background-color: #fff;
-        }
-
-        /* Push zoom control below the navbar too */
-        .leaflet-control-zoom {
-            margin-top: 56px;
-        }
-
-        /* Layer control — push below navbar too */
-        .leaflet-control-layers {
-            margin-top: 56px;
+        /* Push all leaflet top controls below the fixed navbar */
+        .leaflet-top {
+            top: 62px;
         }
 
         .draw-instruction {
