@@ -26,6 +26,11 @@
             background-color: #fff;
         }
 
+        /* Push zoom control below the navbar too */
+        .leaflet-control-zoom {
+            margin-top: 56px;
+        }
+
         /* Layer control — push below navbar too */
         .leaflet-control-layers {
             margin-top: 56px;
