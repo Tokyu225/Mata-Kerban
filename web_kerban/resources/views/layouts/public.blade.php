@@ -49,6 +49,7 @@
     <div class="ms-auto">
         <a href="/" class="btn btn-light btn-sm">Beranda</a>
         <a href="/map" class="btn btn-warning btn-sm">MyMap</a>
+        <a href="/quiz" class="btn btn-info btn-sm">Quiz</a>
     </div>
 </nav>
 
