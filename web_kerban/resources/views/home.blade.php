@@ -55,6 +55,18 @@
         animation: fadeInUp 1s ease-out 0.2s both;
     }
 
+    .hero-content h1 .wave {
+        display: inline-block;
+        animation: wave 1.5s ease-in-out infinite;
+        transform-origin: 70% 70%;
+    }
+    @keyframes wave {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(20deg); }
+        50% { transform: rotate(-10deg); }
+        75% { transform: rotate(15deg); }
+    }
+
     .hero-content p {
         animation: fadeInUp 1s ease-out 0.5s both;
     }
@@ -178,7 +190,9 @@
 <div class="hero">
     <div class="hero-overlay"></div>
     <div class="hero-content">
-        <h1 class="display-4 fw-bold">SELAMAT DATANG</h1>
+        <h1 class="display-4 fw-bold">
+            <span class="wave">👋</span> Halo{{ auth()->check() ? ', ' . Str::words(auth()->user()->name, 1, '') : '' }}!
+        </h1>
         <p class="lead">Sistem Informasi & WebGIS Dusun Kerban</p>
 
         <a href="/map" class="btn btn-success btn-lg mt-3" style="border-radius: 50px; padding: 12px 32px;">Masuk MyMap</a>

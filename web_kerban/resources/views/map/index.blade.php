@@ -19,39 +19,34 @@
             width: 100%;
         }
 
-        /* Push all leaflet top controls below the fixed navbar */
-        .leaflet-top {
-            top: 62px;
-        }
+        /* Push leaflet controls below navbar */
+        .leaflet-top { top: 80px; }
+        .leaflet-bottom { bottom: 12px; }
 
+        /* ── Draw instruction ── */
         .draw-instruction {
             position: absolute;
-            top: 10px;
-            left: 60px;
+            top: 90px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1000;
-            background: rgba(0,0,0,0.7);
+            background: rgba(47,111,62,0.9);
             color: #fff;
-            padding: 6px 14px;
-            border-radius: 4px;
-            font-family: Arial;
-            font-size: 13px;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
             pointer-events: none;
             display: none;
-        }
-
-        /* Category selector popup styling */
-        .category-select {
-            width: 100%;
-            padding: 6px;
-            margin: 6px 0;
-            border-radius: 4px;
-            border: 1px solid #ccc;
+            backdrop-filter: blur(6px);
         }
     </style>
 @endsection
 
 @section('content')
 <div id="map"></div>
+
 @can('draw-maps')
 <div class="draw-instruction" id="drawInstruction">Klik pada peta untuk mulai menggambar</div>
 @endcan
@@ -64,22 +59,42 @@
 @endcan
 
 <script>
-    // Pass draw permission to JS
     window.canDraw = @json(auth()->check() && auth()->user()->isEndministrator());
 
     // =============================================
-    // INIT MAP
+    // BASEMAPS
+    // =============================================
+    var basemaps = {
+        satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+            attribution: '&copy; Esri | MyMap Dusun Kerban',
+            maxZoom: 20
+        }),
+        street: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap',
+            maxZoom: 19
+        }),
+        topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenTopoMap',
+            maxZoom: 17
+        })
+    };
+
+    // =============================================
+    // INIT MAP — default Esri Satellite
     // =============================================
     var map = L.map('map', {
-        zoomControl: false
+        zoomControl: false,
+        layers: [basemaps.satellite]
     }).setView([-7.8, 110.3], 15);
 
-    // Zoom — topright (away from draw toolbar at topleft)
     L.control.zoom({ position: 'topright' }).addTo(map);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap | MyMap Dusun Kerban'
-    }).addTo(map);
+    function switchBasemap(type) {
+        map.eachLayer(function(layer) {
+            if (layer._url) map.removeLayer(layer);
+        });
+        basemaps[type].addTo(map);
+    }
 
     // =============================================
     // LAYER GROUPS
@@ -324,40 +339,6 @@
 
     // Load on start
     loadFeatures();
-
-    // =============================================
-    // BASE LAYERS
-    // =============================================
-    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    });
-
-    var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Esri &copy;'
-    });
-
-    var satelliteLabelLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Esri &copy;'
-    });
-
-    // Combined satellite + labels as a group
-    var satelliteHybrid = L.layerGroup([satellite, satelliteLabelLayer]);
-
-    var baseMaps = {
-        "Peta Jalan": osm,
-        "Citra Satelit": satellite,
-        "Satelit + Label": satelliteHybrid
-    };
-
-    var overlayMaps = {
-        "Data GIS": drawnItems
-    };
-
-    var overlayMaps = {
-        "Data GIS": drawnItems
-    };
-
-    L.control.layers(baseMaps, overlayMaps, { position: 'bottomright', collapsed: false }).addTo(map);
 
     // =============================================
     // TITLE CONTROL

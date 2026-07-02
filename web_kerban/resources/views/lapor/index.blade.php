@@ -7,51 +7,108 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
 
     <style>
-        .page-header {
-            min-height: 220px;
-            background: linear-gradient(135deg, #1f7d3f, #28935b);
+        /* ── Page header ── */
+        .lapor-header {
+            background: linear-gradient(135deg, #1a4d2e 0%, #2f6f3e 100%);
             color: white;
+            border-radius: 0 0 30px 30px;
+            padding: 60px 0 50px;
             position: relative;
+            overflow: hidden;
         }
-        .page-header::after {
+        .lapor-header::after {
             content: "";
             position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at top left, rgba(255,255,255,.16), transparent 45%);
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,.08) 0%, transparent 70%);
+            border-radius: 50%;
             pointer-events: none;
         }
-        .page-header h2,
-        .page-header p {
-            position: relative;
-            z-index: 1;
+        .lapor-header h2 { position: relative; z-index: 1; font-weight: 800; }
+        .lapor-header p { position: relative; z-index: 1; }
+        .lapor-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            border-radius: 50px;
+            background: rgba(255,255,255,.15);
+            color: white;
+            border: 1px solid rgba(255,255,255,.2);
+            backdrop-filter: blur(4px);
+        }
+
+        /* ── Map card ── */
+        .map-card {
+            border: none;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 2px 20px rgba(0,0,0,.06);
+        }
+        .map-card .card-header {
+            background: #fff;
+            border-bottom: 1px solid #eef2ef;
         }
         #map {
             height: 460px;
             width: 100%;
-            border-radius: 1rem;
         }
-        .leaflet-container {
-            border-radius: 1rem;
-        }
+
+        /* ── Form card ── */
         .form-card {
-            border: 0;
-            border-radius: 1rem;
+            border: none;
+            border-radius: 24px;
+            box-shadow: 0 2px 20px rgba(0,0,0,.06);
+            overflow: hidden;
         }
         .form-card .card-body {
             padding: 2rem;
         }
-        .form-control:focus {
-            border-color: #198754;
-            box-shadow: 0 0 0 .2rem rgba(25, 135, 84, .18);
+        .form-control, .form-select {
+            border-radius: 12px;
+            padding: 10px 16px;
+            border: 1px solid #dde5dc;
+            transition: border-color .25s, box-shadow .25s;
         }
-        .badge-soft {
-            background-color: rgba(25, 135, 84, .12);
-            color: #1f7d3f;
+        .form-control:focus, .form-select:focus {
+            border-color: #2f6f3e;
+            box-shadow: 0 0 0 3px rgba(47,111,62,.12);
+            outline: none;
         }
-        .summary-box {
-            background: #eff7ee;
-            border-left: 4px solid #198754;
+        .form-label {
+            font-weight: 600;
+            color: #2d3a2d;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
         }
+
+        /* ── Submit button ── */
+        .btn-submit {
+            border-radius: 50px;
+            padding: 12px 32px;
+            font-weight: 600;
+            background: #2f6f3e;
+            border: none;
+            transition: all .3s;
+        }
+        .btn-submit:hover {
+            background: #1a4d2e;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(47,111,62,.3);
+        }
+
+        /* ── Guide box ── */
+        .guide-box {
+            border: none;
+            border-radius: 16px;
+            background: #f0f7f1;
+            border-left: 4px solid #2f6f3e;
+        }
+
+        /* ── Popup styles ── */
         .report-popup {
             min-width: 240px;
             max-width: 300px;
@@ -60,12 +117,12 @@
         }
         .report-popup .popup-title {
             font-weight: 700;
-            color: #1f7d3f;
+            color: #2f6f3e;
             margin-bottom: 0.35rem;
         }
         .report-popup .popup-meta {
             font-size: 0.85rem;
-            color: #495057;
+            color: #6c757d;
             margin-bottom: 0.8rem;
         }
         .report-popup .popup-description {
@@ -75,18 +132,18 @@
         .report-popup .popup-badge {
             display: inline-flex;
             align-items: center;
-            padding: 0.25rem 0.55rem;
+            padding: 0.25rem 0.65rem;
             font-size: 0.78rem;
             border-radius: 999px;
-            background: rgba(25, 135, 84, 0.12);
-            color: #1f7d3f;
+            background: rgba(47,111,62,0.1);
+            color: #2f6f3e;
             margin-bottom: 0.75rem;
         }
         .report-popup .popup-photo {
             margin-top: 0.8rem;
-            border-radius: 0.9rem;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
         }
         .report-popup .popup-photo img {
             display: block;
@@ -99,6 +156,8 @@
             font-size: 0.82rem;
             color: #6c757d;
         }
+
+        /* ── Category markers ── */
         .category-marker {
             display: block;
             width: 30px;
@@ -126,57 +185,104 @@
             top: 10px;
             box-shadow: inset 0 0 0 2px rgba(255,255,255,0.5);
         }
+
+        /* ── Coordinate inputs ── */
+        .coord-input {
+            background: #f8faf8 !important;
+            color: #2f6f3e !important;
+            font-weight: 600;
+            font-family: monospace;
+        }
+
+        /* ── Locate me button ── */
+        .btn-locate {
+            border-radius: 50px;
+            padding: 8px 18px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: #2f6f3e;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all .2s;
+            white-space: nowrap;
+        }
+        .btn-locate:hover {
+            background: #1a4d2e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(47,111,62,.3);
+        }
+        .btn-locate.loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* ── Mobile improvements ── */
+        @media (max-width: 767px) {
+            .lapor-header {
+                border-radius: 0 0 20px 20px;
+                padding: 70px 0 30px;
+            }
+            .lapor-header h2 { font-size: 1.4rem; }
+            .lapor-header .lead { font-size: 0.9rem; }
+            #map { height: 300px; }
+            .form-card .card-body { padding: 1.2rem; }
+            .guide-box { display: none; }
+        }
     </style>
 @endsection
 
 @section('content')
-<section class="page-header d-flex align-items-center">
-    <div class="container py-5">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h2 class="fw-bold">Lapor Kejadian Dusun Kerban</h2>
-                <p class="lead text-white-75">Tandai lokasi kejadian di peta, isi detail laporan, dan kirim dengan cepat untuk membantu tim desa menindaklanjuti.</p>
-                <div class="d-flex gap-2 flex-wrap">
-                    <span class="badge badge-soft p-2">Interaktif</span>
-                    <span class="badge badge-soft p-2">Mudah</span>
-                    <span class="badge badge-soft p-2">Profesional</span>
-                </div>
-            </div>
+
+{{-- HEADER --}}
+<section class="lapor-header">
+    <div class="container" style="margin-top: 20px;">
+        <h2 class="display-5 fw-bold mb-2">📢 Lapor Kejadian</h2>
+        <p class="lead text-white-75 mb-3">Tandai lokasi di peta, isi detail laporan, kirim dengan cepat — tim desa siap menindaklanjuti.</p>
+        <div class="d-flex gap-2 flex-wrap">
+            <span class="lapor-badge">📍 Interaktif</span>
+            <span class="lapor-badge">⚡ Cepat</span>
+            <span class="lapor-badge">🛡️ Terpercaya</span>
         </div>
     </div>
 </section>
 
+{{-- MAIN CONTENT --}}
 <div class="container py-5">
     <div class="row g-4">
+        {{-- PETA --}}
         <div class="col-xl-7">
-            <div class="card shadow-sm">
-                <div class="card-body p-0">
-                    <div class="d-flex justify-content-between align-items-center px-4 py-3 border-bottom">
-                        <div>
-                            <h5 class="mb-1">Peta Laporan</h5>
-                            <p class="mb-0 text-muted small">Klik pada peta untuk menandai lokasi laporan.</p>
-                        </div>
-                        <span class="badge bg-success">Live</span>
+            <div class="map-card">
+                <div class="card-header d-flex justify-content-between align-items-center px-4 py-3 flex-wrap gap-2">
+                    <div>
+                        <h5 class="mb-0 fw-bold">🗺️ Peta Laporan</h5>
+                        <small class="text-muted">Titik lokasi akan otomatis terdeteksi.</small>
                     </div>
-                    <div id="map"></div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <button class="btn-locate" id="btnLocate" onclick="locateMe()">📍 Lokasi Saya</button>
+                        <span class="badge rounded-pill px-3 py-2" style="background: #2f6f3e; color: white;">Live</span>
+                    </div>
                 </div>
+                <div id="map"></div>
             </div>
-            <div class="card shadow-sm summary-box mt-4 p-4">
-                <h6 class="fw-semibold">Petunjuk Cepat</h6>
-                <ul class="mb-0 ps-3">
-                    <li>Isi judul dan deskripsi singkat.</li>
-                    <li>Tandai lokasi dengan marker di peta.</li>
-                    <li>Pastikan koordinat tampil sebelum mengirim.</li>
-                </ul>
+
+            <div class="guide-box p-4 mt-4">
+                <h6 class="fw-bold mb-3" style="color: #2f6f3e;">💡 Petunjuk Cepat</h6>
+                <ol class="mb-0 ps-3 small text-muted">
+                    <li>Isi <strong>nama</strong> dan <strong>judul</strong> laporan.</li>
+                    <li>Tandai lokasi dengan <strong>klik marker</strong> di peta.</li>
+                    <li>Pastikan koordinat muncul sebelum mengirim.</li>
+                </ol>
             </div>
         </div>
 
+        {{-- FORM --}}
         <div class="col-xl-5">
-            <div class="card shadow-sm form-card">
+            <div class="form-card">
                 <div class="card-body">
                     <div class="mb-4">
-                        <h5 class="card-title mb-1">Form Laporan</h5>
-                        <p class="text-muted mb-0">Lengkapi detail kejadian agar laporan dapat ditangani lebih cepat.</p>
+                        <h5 class="fw-bold mb-1">📝 Form Laporan</h5>
+                        <p class="text-muted small mb-0">Lengkapi detail kejadian di bawah ini.</p>
                     </div>
 
                     <div id="alertPlaceholder"></div>
@@ -201,24 +307,24 @@
                             <label for="kategori" class="form-label">Kategori</label>
                             <select id="kategori" name="kategori" class="form-select">
                                 <option value="">Pilih kategori...</option>
-                                <option value="Banjir">Banjir</option>
-                                <option value="Longsor">Longsor</option>
-                                <option value="Kebakaran">Kebakaran</option>
-                                <option value="Kesehatan">Kesehatan</option>
-                                <option value="Fasilitas Umum">Fasilitas Umum</option>
-                                <option value="Infrastruktur">Infrastruktur</option>
-                                <option value="Keamanan">Keamanan</option>
-                                <option value="lainnya">Lainnya</option>
+                                <option value="Banjir">🌊 Banjir</option>
+                                <option value="Longsor">⛰️ Longsor</option>
+                                <option value="Kebakaran">🔥 Kebakaran</option>
+                                <option value="Kesehatan">🏥 Kesehatan</option>
+                                <option value="Fasilitas Umum">🏫 Fasilitas Umum</option>
+                                <option value="Infrastruktur">🛣️ Infrastruktur</option>
+                                <option value="Keamanan">🛡️ Keamanan</option>
+                                <option value="lainnya">📋 Lainnya</option>
                             </select>
                             <div class="form-text">Pilih kategori yang paling relevan.</div>
                         </div>
                         <div class="mb-3 d-none" id="kategoriLainnyaGroup">
                             <label for="kategori_lainnya" class="form-label">Kategori Lainnya</label>
-                            <input type="text" id="kategori_lainnya" name="kategori_lainnya" class="form-control" placeholder="Tuliskan kategori lain jika tidak tersedia">
-                            <div class="invalid-feedback">Silakan tuliskan kategori lain atau pilih kategori yang tersedia.</div>
+                            <input type="text" id="kategori_lainnya" name="kategori_lainnya" class="form-control" placeholder="Tuliskan kategori lain...">
+                            <div class="invalid-feedback">Silakan tuliskan kategori lain.</div>
                         </div>
                         <div class="mb-3">
-                            <label for="foto" class="form-label">Foto Bukti</label>
+                            <label for="foto" class="form-label">📸 Foto Bukti</label>
                             <input type="file" id="foto" name="foto" class="form-control" accept="image/jpeg,image/png">
                             <div class="form-text">Maksimal 2 MB. Format JPG/PNG.</div>
                         </div>
@@ -226,15 +332,17 @@
                         <div class="row gy-3 mb-4">
                             <div class="col-sm-6">
                                 <label class="form-label">Latitude</label>
-                                <input type="text" name="lat" class="form-control" readonly placeholder="Klik peta untuk memilih">
+                                <input type="text" name="lat" class="form-control coord-input" readonly placeholder="Klik peta →">
                             </div>
                             <div class="col-sm-6">
                                 <label class="form-label">Longitude</label>
-                                <input type="text" name="lng" class="form-control" readonly placeholder="Klik peta untuk memilih">
+                                <input type="text" name="lng" class="form-control coord-input" readonly placeholder="Klik peta →">
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-success btn-submit">Kirim Laporan</button>
+                        <button type="submit" class="btn btn-submit w-100 text-white">
+                            🚀 Kirim Laporan
+                        </button>
                     </form>
                 </div>
             </div>
@@ -249,6 +357,50 @@
 
 <script>
     var map = L.map('map').setView([-7.8, 110.3], 15);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    var userMarker;
+
+    // ── Auto-detect user location on load ──
+    function locateMe() {
+        var btn = document.getElementById('btnLocate');
+        if (!navigator.geolocation) {
+            showAlert('Geolokasi tidak didukung browser ini.', 'warning');
+            return;
+        }
+        btn.classList.add('loading');
+        btn.textContent = '⏳ Mencari...';
+        navigator.geolocation.getCurrentPosition(
+            function(pos) {
+                var lat = pos.coords.latitude;
+                var lng = pos.coords.longitude;
+                if (userMarker) map.removeLayer(userMarker);
+                userMarker = L.marker([lat, lng]).addTo(map)
+                    .bindPopup('<b>📍 Lokasi Anda</b>').openPopup();
+                map.setView([lat, lng], 17);
+                document.querySelector('input[name=lat]').value = lat.toFixed(6);
+                document.querySelector('input[name=lng]').value = lng.toFixed(6);
+                btn.classList.remove('loading');
+                btn.textContent = '📍 Lokasi Saya';
+                showAlert('✅ Lokasi ditemukan! Geser peta atau klik ulang untuk mengubah.', 'success');
+            },
+            function(err) {
+                btn.classList.remove('loading');
+                btn.textContent = '📍 Lokasi Saya';
+                showAlert('⚠️ Gagal mendeteksi lokasi. Klik peta untuk menandai manual.', 'warning');
+            },
+            { enableHighAccuracy: true, timeout: 8000 }
+        );
+    }
+
+    // Auto-locate on page load
+    setTimeout(locateMe, 500);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap'
