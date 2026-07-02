@@ -14,6 +14,7 @@ new #[Layout('layouts.guest')] class extends Component
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
+    public string $role = 'warga';
 
     /**
      * Handle an incoming registration request.
@@ -24,15 +25,33 @@ new #[Layout('layouts.guest')] class extends Component
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:endministrator,warga'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
 
-        event(new Registered($user = User::create($validated)));
+        $user = User::create($validated);
 
-        Auth::login($user);
+        // Generate OTP
+        $otp = $user->generateOtp();
 
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
+        // Send real email notification
+        try {
+            $user->notify(new \App\Notifications\OtpNotification($otp));
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal kirim email OTP: ' . $e->getMessage());
+        }
+
+        // Log OTP as backup (appears in storage/logs/laravel.log)
+        \Illuminate\Support\Facades\Log::info("OTP untuk {$user->email}: {$otp}");
+
+        // Also flash to session as fallback (dev convenience)
+        session(['otp_email' => $user->email, 'otp_display' => $otp]);
+
+        event(new Registered($user));
+
+        // Redirect to OTP verification
+        $this->redirect(route('verify-otp'), navigate: true);
     }
 }; ?>
 
@@ -43,6 +62,17 @@ new #[Layout('layouts.guest')] class extends Component
             <x-input-label for="name" :value="__('Name')" />
             <x-text-input wire:model="name" id="name" class="block mt-1 w-full" type="text" name="name" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        </div>
+
+        <!-- Role -->
+        <div class="mt-4">
+            <x-input-label for="role" :value="__('Role')" />
+            <select wire:model="role" id="role" name="role" required
+                class="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <option value="warga">Warga</option>
+                <option value="endministrator">Endministrator</option>
+            </select>
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
         <!-- Email Address -->

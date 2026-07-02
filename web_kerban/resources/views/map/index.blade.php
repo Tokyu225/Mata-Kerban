@@ -4,7 +4,9 @@
 
 @section('styles')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    @can('draw-maps')
     <link rel="stylesheet" href="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.css"/>
+    @endcan
 
     <style>
         html, body {
@@ -50,17 +52,49 @@
 
 @section('content')
 <div id="map"></div>
+@can('draw-maps')
 <div class="draw-instruction" id="drawInstruction">Klik pada peta untuk mulai menggambar</div>
+@endcan
 @endsection
 
 @section('scripts')
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+@can('draw-maps')
 <script src="https://unpkg.com/leaflet-draw@1.0.4/dist/leaflet.draw.js"></script>
+@endcan
 
 <script>
+    // Pass draw permission to JS
+    window.canDraw = @json(auth()->check() && auth()->user()->isEndministrator());
+
     // =============================================
+    // INIT MAP
+    // =============================================
+    var map = L.map('map', {
+        zoomControl: false
+    }).setView([-7.8, 110.3], 15);
+
+    // Zoom — topright (away from draw toolbar at topleft)
+    L.control.zoom({ position: 'topright' }).addTo(map);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap | MyMap Dusun Kerban'
+    }).addTo(map);
+
+    // =============================================
+    // LAYER GROUPS
+    // =============================================
+    var drawnItems = new L.FeatureGroup();
+    map.addLayer(drawnItems);
+
+    var allLayers = {}; // track layers by id for delete
+
+    // =============================================
+    // DRAW CONTROLS — only if Endministrator
+    // =============================================
+    if (window.canDraw) {
+
     // LOCALIZATION — Leaflet.draw in Indonesian
-    // =============================================
     L.drawLocal = {
         draw: {
             toolbar: {
@@ -111,31 +145,7 @@
         }
     };
 
-    // =============================================
-    // INIT MAP
-    // =============================================
-    var map = L.map('map', {
-        zoomControl: false
-    }).setView([-7.8, 110.3], 15);
-
-    // Zoom — topright (away from draw toolbar at topleft)
-    L.control.zoom({ position: 'topright' }).addTo(map);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap | MyMap Dusun Kerban'
-    }).addTo(map);
-
-    // =============================================
-    // LAYER GROUPS
-    // =============================================
-    var drawnItems = new L.FeatureGroup();
-    map.addLayer(drawnItems);
-
-    var allLayers = {}; // track layers by id for delete
-
-    // =============================================
     // DRAW CONTROLS
-    // =============================================
     var drawControl = new L.Control.Draw({
         position: 'topleft',
         draw: {
@@ -163,9 +173,7 @@
     });
     map.addControl(drawControl);
 
-    // =============================================
     // DRAW INSTRUCTIONS
-    // =============================================
     var instructionEl = document.getElementById('drawInstruction');
 
     map.on(L.Draw.Event.DRAWSTART, function () {
@@ -176,7 +184,6 @@
         instructionEl.style.display = 'none';
     });
 
-    // =============================================
     // HANDLE DRAW CREATED → SAVE TO SERVER
     // =============================================
     map.on(L.Draw.Event.CREATED, function (event) {
@@ -267,7 +274,9 @@
                 });
             }
         });
-    });
+    }); // end DRAW DELETED
+
+    } // end if (window.canDraw)
 
     // =============================================
     // LOAD EXISTING FEATURES FROM SERVER
@@ -327,9 +336,21 @@
         attribution: 'Esri &copy;'
     });
 
+    var satelliteLabelLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Esri &copy;'
+    });
+
+    // Combined satellite + labels as a group
+    var satelliteHybrid = L.layerGroup([satellite, satelliteLabelLayer]);
+
     var baseMaps = {
         "Peta Jalan": osm,
-        "Citra Satelit": satellite
+        "Citra Satelit": satellite,
+        "Satelit + Label": satelliteHybrid
+    };
+
+    var overlayMaps = {
+        "Data GIS": drawnItems
     };
 
     var overlayMaps = {

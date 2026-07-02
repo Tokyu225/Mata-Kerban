@@ -23,10 +23,11 @@ class LoginForm extends Form
 
     /**
      * Attempt to authenticate the request's credentials.
+     * Returns true if authenticated, 'otp' if OTP needed.
      *
      * @throws ValidationException
      */
-    public function authenticate(): void
+    public function authenticate(): bool|string
     {
         $this->ensureIsNotRateLimited();
 
@@ -39,6 +40,16 @@ class LoginForm extends Form
         }
 
         RateLimiter::clear($this->throttleKey());
+
+        // If user hasn't verified OTP, log them out and signal redirect
+        $user = Auth::user();
+        if ($user && !$user->hasVerifiedEmail()) {
+            session(['otp_email' => $user->email, 'otp_display' => $user->otp]);
+            Auth::logout();
+            return 'otp';
+        }
+
+        return true;
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use App\Models\MapLayer;
 
 class MapController extends Controller
@@ -16,6 +17,10 @@ class MapController extends Controller
     // simpan data dari leaflet draw
     public function store(Request $request)
     {
+        if (!Gate::allows('manage-layers')) {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
         $layer = MapLayer::create([
             'name' => $request->name ?? 'Objek Baru',
             'type' => $request->type ?? 'polygon',
@@ -33,6 +38,10 @@ class MapController extends Controller
     // hapus layer
     public function destroy($id)
     {
+        if (!Gate::allows('manage-layers')) {
+            return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 403);
+        }
+
         $layer = MapLayer::findOrFail($id);
         $layer->delete();
 

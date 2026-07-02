@@ -11,6 +11,9 @@ Route::middleware('guest')->group(function () {
     Volt::route('login', 'pages.auth.login')
         ->name('login');
 
+    Volt::route('verify-otp', 'pages.auth.verify-otp')
+        ->name('verify-otp');
+
     Volt::route('forgot-password', 'pages.auth.forgot-password')
         ->name('password.request');
 
@@ -28,4 +31,11 @@ Route::middleware('auth')->group(function () {
 
     Volt::route('confirm-password', 'pages.auth.confirm-password')
         ->name('password.confirm');
+
+    Route::post('logout', function () {
+        auth()->logout();
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+        return redirect('/');
+    })->name('logout');
 });
