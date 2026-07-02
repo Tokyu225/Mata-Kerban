@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\LaporController;
 
 Route::get('/', function () {
     return view('home');
@@ -31,3 +32,9 @@ Route::delete('/profile', function () {
 
 Route::get('/quiz', [QuizController::class, 'index']);
 Route::post('/quiz/submit', [QuizController::class, 'submit']);
+
+Route::get('/lapor', [LaporController::class, 'index']);
+Route::post('/lapor/store', [LaporController::class, 'store']);
+Route::put('/lapor/{id}', [LaporController::class, 'update']);
+Route::delete('/lapor/{id}', [LaporController::class, 'destroy']);
+Route::get('/lapor/geojson', [LaporController::class, 'geojson']);
