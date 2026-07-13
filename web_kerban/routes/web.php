@@ -3,6 +3,7 @@
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\LaporController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('home');
@@ -12,9 +13,16 @@ Route::get('/map', [MapController::class, 'index']);
 Route::get('/map/geojson', [MapController::class, 'geojson']);
 Route::post('/map/store', [MapController::class, 'store']);
 Route::delete('/map/delete/{id}', [MapController::class, 'destroy']);
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('auth')->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware('auth')->name('dashboard');
+
+// Admin CRUD lapor from dashboard (Endministrator only)
+Route::middleware('auth')->group(function () {
+    Route::put('/dashboard/lapor/{id}', [DashboardController::class, 'updateLapor'])
+        ->name('dashboard.lapor.update');
+    Route::delete('/dashboard/lapor/{id}', [DashboardController::class, 'destroyLapor'])
+        ->name('dashboard.lapor.destroy');
+});
 
 Route::delete('/profile', function () {
     $user = auth()->user();

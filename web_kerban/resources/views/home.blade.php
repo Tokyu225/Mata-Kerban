@@ -8,13 +8,29 @@
 
     .hero {
         height: 100vh;
-        background: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef') center/cover fixed;
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
         color: white;
         z-index: 1;
+        overflow: hidden;
+    }
+
+    .hero-video {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        z-index: 0;
+    }
+
+    /* Image mode — hide video, show static background */
+    .hero.image-mode .hero-video {
+        display: none;
+    }
+    .hero.image-mode {
+        background: url('https://images.unsplash.com/photo-1500382017468-9049fed747ef') center/cover fixed;
     }
 
     .hero-overlay {
@@ -22,11 +38,38 @@
         top:0;left:0;
         width:100%;height:100%;
         background: rgba(0,0,0,0.45);
+        z-index: 1;
     }
 
     .hero-content {
         position: relative;
         text-align: center;
+        z-index: 2;
+    }
+
+    /* Hero bg toggle button */
+    .hero-bg-toggle {
+        position: absolute;
+        bottom: 80px;
+        right: 24px;
+        z-index: 3;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(6px);
+        border: 1.5px solid rgba(255,255,255,0.3);
+        color: white;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.3s, transform 0.3s;
+    }
+    .hero-bg-toggle:hover {
+        background: rgba(255,255,255,0.3);
+        transform: scale(1.1);
     }
 
     /* Content wrapper — slides over the fixed hero on scroll */
@@ -187,16 +230,22 @@
 @section('content')
 
 {{-- HERO --}}
-<div class="hero">
+<div class="hero" id="heroSection">
+    <video class="hero-video" autoplay muted loop playsinline>
+        <source src="{{ asset('videos/drone_place.mp4') }}" type="video/mp4">
+    </video>
     <div class="hero-overlay"></div>
     <div class="hero-content">
         <h1 class="display-4 fw-bold">
-            <span class="wave">👋</span> Halo{{ auth()->check() ? ', ' . Str::words(auth()->user()->name, 1, '') : '' }}!
+            <span class="wave"><i class="bi bi-hand-index-thumb-fill"></i></span> Halo{{ auth()->check() ? ', ' . Str::words(auth()->user()->name, 1, '') : '' }}!
         </h1>
         <p class="lead">Sistem Informasi & WebGIS Dusun Kerban</p>
 
         <a href="/map" class="btn btn-success btn-lg mt-3" style="border-radius: 50px; padding: 12px 32px;">Masuk MyMap</a>
     </div>
+    <button class="hero-bg-toggle" id="heroBgToggle" title="Ganti latar belakang">
+        <i class="bi bi-camera-video-fill"></i>
+    </button>
 </div>
 
 {{-- MAIN CONTENT — slides over the fixed hero on scroll --}}
@@ -211,7 +260,7 @@
             <div class="row align-items-center">
                 <div class="col-md-4 text-center mb-4 mb-md-0">
                     <div class="sambutan-photo-placeholder">
-                        <span>👤</span>
+                        <i class="bi bi-person-fill"></i>
                     </div>
                 </div>
                 <div class="col-md-8">
@@ -246,7 +295,7 @@
         <div class="row g-4">
             <div class="col-md-6">
                 <div class="sejarah-card">
-                    <div class="sejarah-icon">🏡</div>
+                    <div class="sejarah-icon"><i class="bi bi-house-door-fill"></i></div>
                     <h5>Masa Awal dan Para Pendiri</h5>
                     <p>
                         Sejarah dusun ini dimulai dengan kedatangan para pendatang. Di antara tokoh-tokoh
@@ -258,7 +307,7 @@
 
             <div class="col-md-6">
                 <div class="sejarah-card">
-                    <div class="sejarah-icon">📜</div>
+                    <div class="sejarah-icon"><i class="bi bi-journal-text"></i></div>
                     <h5>Asal-Usul Nama</h5>
                     <p>
                         Nama Kerban diyakini berasal dari sebuah peristiwa pengorbanan di masa lalu. Ada
@@ -271,7 +320,7 @@
 
             <div class="col-md-6">
                 <div class="sejarah-card">
-                    <div class="sejarah-icon">🕌</div>
+                    <div class="sejarah-icon"><i class="bi bi-building"></i></div>
                     <h5>Pembangunan Fasilitas Keagamaan</h5>
                     <p>
                         Salah satu perkembangan penting di dusun ini adalah pembangunan sebuah Rumah
@@ -283,7 +332,7 @@
 
             <div class="col-md-6">
                 <div class="sejarah-card">
-                    <div class="sejarah-icon">🌱</div>
+                    <div class="sejarah-icon"><i class="bi bi-tree-fill"></i></div>
                     <h5>Perkembangan Dusun</h5>
                     <p>
                         Wilayah dusun yang semula sangat luas, secara bertahap mulai berkembang dengan
@@ -304,21 +353,21 @@
 
         <div class="col-md-4">
             <div class="card card-menu p-4 shadow-sm">
-                <h5>📍 Profil Dusun</h5>
+                <h5><i class="bi bi-geo-alt-fill"></i> Profil Dusun</h5>
                 <p>Informasi wilayah & struktur dusun</p>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="card card-menu p-4 shadow-sm">
-                <h5>🗺️ MyMap</h5>
+                <h5><i class="bi bi-map-fill"></i> MyMap</h5>
                 <p>Peta interaktif & data spasial</p>
             </div>
         </div>
 
         <div class="col-md-4">
             <div class="card card-menu p-4 shadow-sm">
-                <h5>📊 Data Penduduk</h5>
+                <h5><i class="bi bi-bar-chart-fill"></i> Data Penduduk</h5>
                 <p>Statistik & informasi warga</p>
             </div>
         </div>
@@ -387,4 +436,28 @@
     <p>Sistem Informasi Desa & WebGIS</p>
 </div>
 
+@endsection
+
+@section('scripts')
+<script>
+    // Hero background toggle: video <-> image
+    (function() {
+        var hero = document.getElementById('heroSection');
+        var toggle = document.getElementById('heroBgToggle');
+        var icon = toggle.querySelector('i');
+
+        // Restore saved preference
+        var saved = localStorage.getItem('kerban-hero-bg');
+        if (saved === 'image') {
+            hero.classList.add('image-mode');
+            icon.className = 'bi bi-image-fill';
+        }
+
+        toggle.addEventListener('click', function() {
+            var isImage = hero.classList.toggle('image-mode');
+            icon.className = isImage ? 'bi bi-image-fill' : 'bi bi-camera-video-fill';
+            localStorage.setItem('kerban-hero-bg', isImage ? 'image' : 'video');
+        });
+    })();
+</script>
 @endsection

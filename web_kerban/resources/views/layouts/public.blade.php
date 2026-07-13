@@ -7,6 +7,7 @@
     <title>@yield('title', 'Desa Kerban')</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Modern font: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,6 +51,19 @@
         body.dark-mode .navbar-custom.scrolled {
             background-color: #0f1a14 !important;
         }
+        body.dark-mode .navbar-custom .navbar-collapse .btn {
+            background: rgba(255,255,255,0.06) !important;
+            border-color: rgba(255,255,255,0.2) !important;
+            color: rgba(255,255,255,0.85) !important;
+        }
+        body.dark-mode .navbar-custom .btn-theme,
+        body.dark-mode .navbar-custom .btn-login {
+            color: rgba(255,255,255,0.75) !important;
+            border-color: rgba(255,255,255,0.3) !important;
+        }
+        body.dark-mode .navbar-custom .btn-mymap { color: #f5c542 !important; border-color: #f5c542 !important; }
+        body.dark-mode .navbar-custom .btn-lapor { color: #ff6b6b !important; border-color: #ff6b6b !important; }
+        body.dark-mode .navbar-custom .btn-quiz { color: #5ec5f9 !important; border-color: #5ec5f9 !important; }
         body.dark-mode .card,
         body.dark-mode .sambutan-card,
         body.dark-mode .sejarah-card,
@@ -101,7 +115,10 @@
             background: rgba(0,0,0,0.6);
         }
         body.dark-mode #page-loader {
-            background: #0f1a14;
+            background-color: #0f1a14;
+            background-image:
+                linear-gradient(to bottom, #0f1a14 0%, #0f1a14 30%, rgba(15,26,20,0.8) 55%, rgba(15,26,20,0) 100%),
+                radial-gradient(circle, rgba(90,175,110,0.12) 1.5px, transparent 1.5px);
         }
 
         /* Theme toggle — subtle pill */
@@ -171,17 +188,11 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
-        /* Nav action buttons — icon always, text slides in on hover */
+        /* Nav action buttons — icon always visible, text slides in on hover */
         .nav-action-wrap {
             display: inline-flex;
             align-items: center;
             vertical-align: middle;
-            max-width: 28px;
-            overflow: hidden;
-            transition: max-width 0.35s ease;
-        }
-        .nav-action-wrap:hover {
-            max-width: 180px;
         }
         .navbar-custom .nav-action {
             display: inline-flex !important;
@@ -202,34 +213,33 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .navbar-custom .nav-action .nav-icon { font-size: 0.82rem; flex-shrink: 0; }
+        .navbar-custom .nav-action .nav-label {
+            display: inline-block;
+            max-width: 0;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: max-width 0.35s ease;
+            vertical-align: middle;
+        }
+        .nav-action-wrap:hover .nav-label {
+            max-width: 120px;
+        }
 
-        .nav-action.btn-mymap { color: #f5c542 !important; border-color: #f5c542 !important; }
-        .nav-action.btn-mymap:hover { background: #f5c542 !important; color: #1a4d2e !important; }
-        .nav-action.btn-quiz { color: #5ec5f9 !important; border-color: #5ec5f9 !important; }
-        .nav-action.btn-quiz:hover { background: #5ec5f9 !important; color: #1a4d2e !important; }
-        .nav-action.btn-lapor { color: #ff6b6b !important; border-color: #ff6b6b !important; }
-        .nav-action.btn-lapor:hover { background: #ff6b6b !important; color: #fff !important; }
+        /* Nav action + collapsed menu button colors */
+        .nav-action.btn-mymap, .navbar-custom .btn-mymap { color: #f5c542 !important; border-color: #f5c542 !important; }
+        .nav-action.btn-mymap:hover, .navbar-custom .btn-mymap:hover { background: #f5c542 !important; color: #1a4d2e !important; }
+        .nav-action.btn-quiz, .navbar-custom .btn-quiz { color: #5ec5f9 !important; border-color: #5ec5f9 !important; }
+        .nav-action.btn-quiz:hover, .navbar-custom .btn-quiz:hover { background: #5ec5f9 !important; color: #1a4d2e !important; }
+        .nav-action.btn-lapor, .navbar-custom .btn-lapor { color: #ff6b6b !important; border-color: #ff6b6b !important; }
+        .nav-action.btn-lapor:hover, .navbar-custom .btn-lapor:hover { background: #ff6b6b !important; color: #fff !important; }
 
-        /* Action button colors */
-        .nav-action.btn-mymap { color: #f5c542 !important; border-color: #f5c542 !important; }
-        .nav-action.btn-mymap:hover { background: #f5c542 !important; color: #1a4d2e !important; }
-        .nav-action.btn-quiz { color: #5ec5f9 !important; border-color: #5ec5f9 !important; }
-        .nav-action.btn-quiz:hover { background: #5ec5f9 !important; color: #1a4d2e !important; }
-        .nav-action.btn-lapor { color: #ff6b6b !important; border-color: #ff6b6b !important; }
-        .nav-action.btn-lapor:hover { background: #ff6b6b !important; color: #fff !important; }
+        .navbar-custom .btn-login {
+            color: rgba(255,255,255,0.85) !important;
+            border-color: rgba(255,255,255,0.5) !important;
+        }
         .navbar-custom .btn-login:hover {
             background: #7ed89b !important;
             color: #1a4d2e !important;
-        }
-
-        /* Lapor — red */
-        .navbar-custom .btn-lapor {
-            color: #ff6b6b !important;
-            border-color: #ff6b6b !important;
-        }
-        .navbar-custom .btn-lapor:hover {
-            background: #ff6b6b !important;
-            color: #fff !important;
         }
 
         /* Navbar divider line */
@@ -260,27 +270,35 @@
             .navbar-custom {
                 width: 94vw;
                 border-radius: 30px;
-                padding: 8px 16px;
+                padding: 8px 14px;
                 flex-wrap: wrap;
             }
             .navbar-custom .navbar-collapse {
                 width: 100%;
-                padding-top: 10px;
+                padding: 12px 4px 4px;
                 flex-direction: column;
                 gap: 6px;
             }
             .navbar-custom .navbar-collapse .btn {
                 width: 100%;
                 text-align: center;
-                padding: 8px 16px !important;
+                padding: 10px 16px !important;
+                font-size: 0.9rem !important;
+                border-radius: 16px !important;
             }
             .navbar-custom .navbar-collapse .d-flex {
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 6px !important;
+                gap: 8px !important;
             }
             .navbar-divider {
                 display: none;
+            }
+            /* Mobile: theme & user buttons in top bar */
+            .navbar-custom .btn-theme,
+            .navbar-custom .btn-login {
+                padding: 4px 10px !important;
+                font-size: 0.8rem !important;
             }
             .hero h1 {
                 font-size: 2rem !important;
@@ -341,7 +359,7 @@
         .version-tag {
             position: fixed;
             bottom: 12px;
-            right: 16px;
+            left: 16px;
             z-index: 1000;
             background: rgba(47, 111, 62, 0.12);
             color: #2f6f3e;
@@ -365,11 +383,20 @@
             position: fixed;
             inset: 0;
             z-index: 99999;
-            background: #f7f7f7;
+            background-color: #f7f7f7;
+            background-image:
+                /* Top: solid colour, softly fading out toward the bottom */
+                linear-gradient(to bottom, #f7f7f7 0%, #f7f7f7 30%, rgba(247,247,247,0.82) 55%, rgba(247,247,247,0) 100%),
+                /* Bottom: subtle polka-dot pattern */
+                radial-gradient(circle, rgba(47,111,62,0.25) 2.5px, transparent 2.5px);
+            background-size: 100% 100%, 32px 32px;
+            background-position: 0 0, 0 0;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.35s ease, visibility 0.35s ease;
+            gap: 22px;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         #page-loader.hidden {
             opacity: 0;
@@ -384,6 +411,15 @@
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
         }
+        .loader-brand {
+            font-family: 'Orbitron', 'Kiona', 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #2f6f3e;
+            opacity: 0.6;
+        }
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
@@ -395,7 +431,10 @@
 <body>
 
 {{-- PAGE LOADER / TRANSITION OVERLAY --}}
-<div id="page-loader"><div class="loader-spinner"></div></div>
+<div id="page-loader">
+    <div class="loader-spinner"></div>
+    <div class="loader-brand">Kerban</div>
+</div>
 
 {{-- NAVBAR — translucent → solid on scroll --}}
 <nav class="navbar navbar-expand-md navbar-custom" id="mainNavbar">
@@ -404,30 +443,29 @@
             <a class="navbar-brand navbar-brand-text me-1 mb-0" href="/">Kerban</a>
             @unless(request()->is('map*') || request()->is('lapor*'))
                 <span class="d-none d-md-flex align-items-center gap-2">
-                    <span class="nav-action-wrap"><a href="/map" class="btn btn-mymap btn-sm nav-action"><span class="nav-icon">🗺️</span> <span class="nav-label">MyMap</span></a></span>
-                    <span class="nav-action-wrap"><a href="/lapor" class="btn btn-lapor btn-sm nav-action"><span class="nav-icon">📢</span> <span class="nav-label">Lapor min!</span></a></span>
-                    <span class="nav-action-wrap"><a href="/quiz" class="btn btn-quiz btn-sm nav-action"><span class="nav-icon">🧠</span> <span class="nav-label">Quiz</span></a></span>
+                    <span class="nav-action-wrap"><a href="/map" class="btn btn-mymap btn-sm nav-action"><i class="bi bi-geo-alt-fill nav-icon"></i> <span class="nav-label">MyMap</span></a></span>
+                    <span class="nav-action-wrap"><a href="/lapor" class="btn btn-lapor btn-sm nav-action"><i class="bi bi-megaphone-fill nav-icon"></i> <span class="nav-label">Lapor min!</span></a></span>
+                    <span class="nav-action-wrap"><a href="/quiz" class="btn btn-quiz btn-sm nav-action"><i class="bi bi-lightbulb-fill nav-icon"></i> <span class="nav-label">Quiz</span></a></span>
                 </span>
             @endunless
         </div>
 
-        {{-- Hamburger toggler (mobile) --}}
-        <button class="navbar-toggler d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        {{-- Right side utilities (always visible) --}}
-        <div class="d-none d-md-flex align-items-center gap-2">
+        {{-- Right group: utilities + hamburger --}}
+        <div class="d-flex align-items-center gap-2">
             @if(request()->is('map*') || request()->is('lapor*'))
-                <button class="btn btn-mymap btn-sm" id="mapSettingsBtn" title="Pengaturan Peta">⚙️</button>
+                <button class="btn btn-mymap btn-sm d-none d-md-flex" id="mapSettingsBtn" title="Pengaturan Peta"><i class="bi bi-gear-fill"></i></button>
             @endif
-            <span class="navbar-divider"></span>
-            <button class="btn btn-theme btn-sm" id="themeToggle" title="Toggle Dark Mode">🌙</button>
+            <span class="navbar-divider d-none d-md-flex"></span>
+            <button class="btn btn-theme btn-sm" id="themeToggle" title="Toggle Dark Mode"><i class="bi bi-moon-fill"></i></button>
             @auth
-                <a href="{{ route('dashboard') }}" class="btn btn-login btn-sm">👋 {{ Str::words(auth()->user()->name, 1, '') }}</a>
+                <a href="{{ route('dashboard') }}" class="btn btn-login btn-sm"><i class="bi bi-person-circle"></i> <span class="d-none d-sm-inline">{{ Str::words(auth()->user()->name, 1, '') }}</span></a>
             @else
                 <a href="{{ route('login') }}" class="btn btn-login btn-sm">Login</a>
             @endauth
+            {{-- Hamburger toggler (mobile) — inside right group --}}
+            <button class="navbar-toggler d-md-none ms-1" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                <span class="navbar-toggler-icon"></span>
+            </button>
         </div>
     </div>
 
@@ -435,22 +473,13 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="d-flex flex-column gap-2 pt-2 d-md-none">
             @unless(request()->is('map*') || request()->is('lapor*'))
-                <a href="/map" class="btn btn-mymap btn-sm w-100">MyMap</a>
-                <a href="/lapor" class="btn btn-lapor btn-sm w-100">Lapor min!</a>
-                <a href="/quiz" class="btn btn-quiz btn-sm w-100">Quiz</a>
+                <a href="/map" class="btn btn-mymap btn-sm w-100"><i class="bi bi-geo-alt-fill"></i> MyMap</a>
+                <a href="/lapor" class="btn btn-lapor btn-sm w-100"><i class="bi bi-megaphone-fill"></i> Lapor min!</a>
+                <a href="/quiz" class="btn btn-quiz btn-sm w-100"><i class="bi bi-lightbulb-fill"></i> Quiz</a>
             @endunless
             @if(request()->is('map*') || request()->is('lapor*'))
-                <button class="btn btn-mymap btn-sm w-100" id="mapSettingsBtnMobile" title="Pengaturan Peta">⚙️ Pengaturan Peta</button>
+                <button class="btn btn-mymap btn-sm w-100" id="mapSettingsBtnMobile" title="Pengaturan Peta"><i class="bi bi-gear-fill"></i> Pengaturan Peta</button>
             @endif
-            <hr style="border-color: rgba(255,255,255,0.15); margin: 4px 0;">
-            <div class="d-flex gap-2">
-                <button class="btn btn-theme btn-sm flex-shrink-0" id="themeToggleMobile" title="Dark Mode">🌙</button>
-                @auth
-                    <a href="{{ route('dashboard') }}" class="btn btn-login btn-sm flex-grow-1">👋 {{ Str::words(auth()->user()->name, 1, '') }}</a>
-                @else
-                    <a href="{{ route('login') }}" class="btn btn-login btn-sm flex-grow-1">Login</a>
-                @endauth
-            </div>
         </div>
     </div>
 </nav>
@@ -463,18 +492,18 @@
 <div class="map-settings-popup" id="mapSettingsPopup" style="display:none;">
     <div class="map-settings-card">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h6 class="fw-bold mb-0">⚙️ Pengaturan Peta</h6>
+            <h6 class="fw-bold mb-0"><i class="bi bi-gear-fill"></i> Pengaturan Peta</h6>
             <button class="btn-close" id="closeSettingsBtn"></button>
         </div>
         <label class="form-label fw-semibold small">Basemap</label>
         <div class="basemap-settings">
-            <button class="basemap-opt active" data-bm="satellite">🛰️ Satelit</button>
-            <button class="basemap-opt" data-bm="street">🗺️ Jalan</button>
-            <button class="basemap-opt" data-bm="topo">🏔️ Medan</button>
+            <button class="basemap-opt active" data-bm="satellite"><i class="bi bi-globe-americas"></i> Satelit</button>
+            <button class="basemap-opt" data-bm="street"><i class="bi bi-signpost-2-fill"></i> Jalan</button>
+            <button class="basemap-opt" data-bm="topo"><i class="bi bi-triangle-fill"></i> Medan</button>
         </div>
         <hr>
         <div class="d-flex justify-content-between align-items-center">
-            <span class="small">🌙 Dark Mode</span>
+            <span class="small"><i class="bi bi-moon-fill"></i> Dark Mode</span>
             <button class="btn btn-sm btn-outline-secondary rounded-pill px-3" id="settingsDarkToggle">Toggle</button>
         </div>
     </div>
@@ -580,12 +609,20 @@
 <script>
     const loader = document.getElementById('page-loader');
 
-    // ── Hide loader on page ready ──
-    window.addEventListener('pageshow', function () {
-        // Small delay so the loader is briefly visible, smoothing the transition
+    function hideLoader(delay = 300) {
         setTimeout(function () {
-            loader.classList.add('hidden');
-        }, 300);
+            if (loader) loader.classList.add('hidden');
+        }, delay);
+    }
+
+    // ── Hide loader on full page loads ──
+    window.addEventListener('pageshow', function () {
+        hideLoader(300);
+    });
+
+    // ── Hide loader on Livewire SPA navigation (pageshow does NOT fire here) ──
+    document.addEventListener('livewire:navigated', function () {
+        hideLoader(100);
     });
 
     // ── Show loader when navigating away (internal links only) ──
@@ -598,7 +635,7 @@
         if (link.target === '_blank') return;
         if (link.hasAttribute('download')) return;
         if (e.ctrlKey || e.metaKey || e.shiftKey) return;
-        loader.classList.remove('hidden');
+        if (loader) loader.classList.remove('hidden');
     });
 
     // ── Navbar scroll effect ──
@@ -614,19 +651,15 @@
     // ── Theme toggle (Dark / Light mode) ──
     function toggleTheme() {
         var isDark = document.body.classList.toggle('dark-mode');
-        var icon = isDark ? '☀️' : '🌙';
-        document.querySelectorAll('#themeToggle, #themeToggleMobile').forEach(function(b) {
-            b.textContent = icon;
-        });
+        var iconClass = isDark ? 'bi-sun-fill' : 'bi-moon-fill';
+        document.getElementById('themeToggle').innerHTML = '<i class="bi ' + iconClass + '"></i>';
         localStorage.setItem('kerban-theme', isDark ? 'dark' : 'light');
     }
     var savedTheme = localStorage.getItem('kerban-theme');
     if (savedTheme === 'dark') { document.body.classList.add('dark-mode'); }
-    var themeIcon = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-    document.querySelectorAll('#themeToggle, #themeToggleMobile').forEach(function(b) { b.textContent = themeIcon; });
+    var themeIconClass = document.body.classList.contains('dark-mode') ? 'bi-sun-fill' : 'bi-moon-fill';
+    document.getElementById('themeToggle').innerHTML = '<i class="bi ' + themeIconClass + '"></i>';
     document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-    var mobileToggle = document.getElementById('themeToggleMobile');
-    if (mobileToggle) mobileToggle.addEventListener('click', toggleTheme);
 
     // ── Sync mobile settings button ──
     var mobileSettingsBtn = document.getElementById('mapSettingsBtnMobile');
