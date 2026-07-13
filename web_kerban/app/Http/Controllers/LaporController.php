@@ -31,7 +31,7 @@ class LaporController extends Controller
         $data = $request->only(['judul', 'nama_pelapor', 'deskripsi', 'kategori', 'lat', 'lng']);
 
         if ($request->hasFile('foto')) {
-            $path = $request->file('foto')->store('lapor_fotos', 'public');
+            $path = $request->file('foto')->store('lapor_fotos', 'supabase');
             $data['foto'] = $path;
         }
 
@@ -58,9 +58,9 @@ class LaporController extends Controller
 
         if ($request->hasFile('foto')) {
             if ($lapor->foto) {
-                Storage::disk('public')->delete($lapor->foto);
+                Storage::disk('supabase')->delete($lapor->foto);
             }
-            $data['foto'] = $request->file('foto')->store('lapor_fotos', 'public');
+            $data['foto'] = $request->file('foto')->store('lapor_fotos', 'supabase');
         }
 
         $lapor->update($data);
@@ -72,7 +72,7 @@ class LaporController extends Controller
     {
         $lapor = Lapor::findOrFail($id);
         if ($lapor->foto) {
-            Storage::disk('public')->delete($lapor->foto);
+            Storage::disk('supabase')->delete($lapor->foto);
         }
         $lapor->delete();
         return response()->json(['status' => 'success']);
