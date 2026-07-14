@@ -3,7 +3,9 @@ import { prisma } from "@/lib/db";
 import { generateOtp } from "@/lib/utils";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+function getResend() {
+  return new Resend(process.env.RESEND_API_KEY);
+}
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
@@ -22,7 +24,7 @@ export async function POST(req: NextRequest) {
   });
 
   try {
-    await resend.emails.send({
+    await getResend().emails.send({
       from: process.env.RESEND_FROM_EMAIL || "noreply@dusunkerban.my.id",
       to: email,
       subject: "Kode OTP Baru — Dusun Kerban",
