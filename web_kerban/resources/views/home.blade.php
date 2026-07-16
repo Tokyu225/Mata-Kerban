@@ -132,6 +132,29 @@
             </div>
         </div>
 
+            {{-- SEJARAH --}}
+            <div class="container my-5">
+                <h3 class="section-title text-center">Sejarah Dusun Kerban</h3>
+
+                <div class="row align-items-center">
+
+                    <div class="col-md-6">
+                        <img src="{{ asset('storage/images/tembang.jpg') }}" alt="Sejarah Dusun Kerban" class="img-fluid rounded shadow-sm">
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="card p-4 shadow-sm">
+                            <h5>Awal Mula Dusun Kerban</h5>
+                            <p>Kerban memiliki sejarah historis yang diyakini masyarakat sebagai sebuah nama dusun yang merefleksikan kebiasaan tradisi masyarakat Jawa. Orang jawa sendiri meyakini kepercayaan terdahulu yakni "Ana Dewa Ngangklang Jagat" (Ada Dewa yang sedang berkeliling Dunia), yang mana Ketika menjelang maghrib diharuskan setiap orang yang sedang beraktivitas harus berhenti dan istirahat. Hal ini terus dilakukan oleh masyarakat jawa sehingga menjadi suatu kebiasaan/keseringan atau dalam Bahasa jawa yakni "Kerepan". Kerban sendiri merupakan simplifikasi dari kata kerepan yang berarti kebiasaan tersebut yang dilakukan oleh orang jawa terdahulu sampai sekarang.</p>
+
+                            <p>Dalam versi sejarah yang lain, istilah Dusun Kerban di Desa Sumberarum juga dikaitkan dengan makna "Korban" atau "Pengorbanan" yang berkaitan dengan cerita perjuangan Pangeran Diponegoro. Menurut penuturan lokal, pada awal Perang Jawa tahun 1825, pasukan Pangeran Diponegoro pernah membangun perkemahan dan menggali sumber air di wilayah Desa Sumberarum (salah satunya di Kerban). Banyaknya korban pada saat perlawanan terhadap kolonial Belanda, menjadikan dusun Kerban sangat identik dengan simbol pengorbanan para pejuang terdahulu.
+</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         <div class="col-md-6">
             <div class="card p-3 shadow-sm">
                 <h5>Pengembangan UMKM Dusun</h5>
