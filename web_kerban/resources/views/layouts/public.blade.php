@@ -76,7 +76,38 @@
             color: #d4ddd6 !important;
         }
         body.dark-mode .sambutan-section {
-            background: linear-gradient(135deg, #0f1a14 0%, #142018 100%) !important;
+            background: linear-gradient(175deg, #0d1912 0%, #111f16 40%, #0e1a13 100%) !important;
+        }
+        body.dark-mode .sambutan-section::before,
+        body.dark-mode .sambutan-section::after {
+            opacity: 0.4;
+        }
+        body.dark-mode .sambutan-badge {
+            background: linear-gradient(135deg, #3a8a4e, #5cb870);
+        }
+        body.dark-mode .sambutan-title {
+            color: #e8f5e9;
+        }
+        body.dark-mode .sambutan-subtitle {
+            color: #7daa86;
+        }
+        body.dark-mode .sambutan-card {
+            background: #16281b !important;
+        }
+        body.dark-mode .sambutan-quote-icon {
+            background: #3a8a4e;
+        }
+        body.dark-mode .sambutan-quote-wrapper {
+            border-left-color: rgba(58,138,78,0.25);
+        }
+        body.dark-mode .sambutan-name {
+            color: #c8e6c9;
+        }
+        body.dark-mode .sambutan-role {
+            color: #7daa86;
+        }
+        body.dark-mode .sambutan-signature {
+            color: #6b8e73;
         }
         body.dark-mode .sejarah-card {
             background: #16281b !important;
@@ -88,7 +119,6 @@
             color: #a0b5a5 !important;
         }
         body.dark-mode .sejarah-card h5,
-        body.dark-mode .sambutan-name,
         body.dark-mode .section-title {
             color: #5aaf6e !important;
         }
@@ -115,10 +145,29 @@
             background: rgba(0,0,0,0.6);
         }
         body.dark-mode #page-loader {
-            background-color: #0f1a14;
+            background-color: #0d1811;
             background-image:
-                linear-gradient(to bottom, #0f1a14 0%, #0f1a14 30%, rgba(15,26,20,0.8) 55%, rgba(15,26,20,0) 100%),
-                radial-gradient(circle, rgba(90,175,110,0.12) 1.5px, transparent 1.5px);
+                radial-gradient(circle, rgba(90,175,110,0.1) 1.5px, transparent 1.5px);
+            background-size: 26px 26px;
+        }
+        body.dark-mode .loader-spinner::after {
+            background: #0d1811;
+        }
+        body.dark-mode .loader-outer-ring {
+            border-color: rgba(90, 175, 110, 0.15);
+        }
+        body.dark-mode .loader-center-dot {
+            background: #5aaf6e;
+            box-shadow: 0 0 12px rgba(90,175,110,0.5);
+        }
+        body.dark-mode .loader-brand {
+            color: #5aaf6e;
+        }
+        body.dark-mode .loader-tagline {
+            color: #5a7a5e;
+        }
+        body.dark-mode .loader-dots span {
+            background: #5aaf6e;
         }
 
         /* Theme toggle — subtle pill */
@@ -383,45 +432,126 @@
             position: fixed;
             inset: 0;
             z-index: 99999;
-            background-color: #f7f7f7;
+            background-color: #f9fbf9;
             background-image:
-                /* Top: solid colour, softly fading out toward the bottom */
-                linear-gradient(to bottom, #f7f7f7 0%, #f7f7f7 30%, rgba(247,247,247,0.82) 55%, rgba(247,247,247,0) 100%),
-                /* Bottom: subtle polka-dot pattern */
-                radial-gradient(circle, rgba(47,111,62,0.25) 2.5px, transparent 2.5px);
-            background-size: 100% 100%, 32px 32px;
-            background-position: 0 0, 0 0;
+                radial-gradient(circle, rgba(47,111,62,0.08) 1.5px, transparent 1.5px);
+            background-size: 26px 26px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 22px;
-            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 28px;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                        visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         #page-loader.hidden {
             opacity: 0;
+            transform: scale(1.04);
             visibility: hidden;
             pointer-events: none;
         }
-        .loader-spinner {
-            width: 48px;
-            height: 48px;
-            border: 4px solid #d4e8d8;
-            border-top-color: #2f6f3e;
-            border-radius: 50%;
-            animation: spin 0.7s linear infinite;
+
+        /* ── Spinner container ── */
+        .loader-spinner-wrap {
+            position: relative;
+            width: 64px;
+            height: 64px;
         }
+
+        /* Outer pulsing ring */
+        .loader-outer-ring {
+            position: absolute;
+            inset: -12px;
+            border-radius: 50%;
+            border: 2px solid rgba(47, 111, 62, 0.12);
+            animation: loaderRingPulse 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        .loader-outer-ring:nth-child(2) {
+            animation-delay: 0.7s;
+        }
+        @keyframes loaderRingPulse {
+            0%, 100% { transform: scale(0.85); opacity: 0.5; }
+            50%      { transform: scale(1.3); opacity: 0; }
+        }
+
+        /* Main conic spinner */
+        .loader-spinner {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: conic-gradient(from 90deg, transparent 10%, #2f6f3e 25%, #4a9e5e 45%, #8cc99a 60%, transparent 75%);
+            animation: loaderSpin 1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+        }
+        .loader-spinner::after {
+            content: "";
+            position: absolute;
+            inset: 6px;
+            border-radius: 50%;
+            background: #f9fbf9;
+        }
+
+        /* Center dot */
+        .loader-center-dot {
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2f6f3e;
+            box-shadow: 0 0 12px rgba(47,111,62,0.4);
+            z-index: 1;
+        }
+        @keyframes loaderSpin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ── Text block ── */
         .loader-brand {
             font-family: 'Orbitron', 'Kiona', 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 1.1rem;
-            letter-spacing: 0.12em;
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.18em;
             text-transform: uppercase;
             color: #2f6f3e;
-            opacity: 0.6;
+            opacity: 0;
+            transform: translateY(8px);
+            animation: loaderTextReveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .loader-tagline {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.78rem;
+            color: #8aa896;
+            letter-spacing: 0.07em;
+            margin-top: -16px;
+            opacity: 0;
+            transform: translateY(6px);
+            animation: loaderTextReveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.45s forwards;
+        }
+        @keyframes loaderTextReveal {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Loading dots ── */
+        .loader-dots {
+            display: flex;
+            gap: 6px;
+            margin-top: -4px;
+        }
+        .loader-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #2f6f3e;
+            opacity: 0;
+            animation: loaderDotBounce 1.4s ease-in-out infinite;
+        }
+        .loader-dots span:nth-child(2) { animation-delay: 0.16s; }
+        .loader-dots span:nth-child(3) { animation-delay: 0.32s; }
+        @keyframes loaderDotBounce {
+            0%, 80%, 100% { opacity: 0; transform: translateY(0); }
+            40% { opacity: 1; transform: translateY(-6px); }
         }
 
     </style>
@@ -432,8 +562,17 @@
 
 {{-- PAGE LOADER / TRANSITION OVERLAY --}}
 <div id="page-loader">
-    <div class="loader-spinner"></div>
+    <div class="loader-spinner-wrap">
+        <div class="loader-outer-ring"></div>
+        <div class="loader-outer-ring"></div>
+        <div class="loader-spinner"></div>
+        <div class="loader-center-dot"></div>
+    </div>
     <div class="loader-brand">Kerban</div>
+    <div class="loader-tagline">Sistem Informasi & WebGIS</div>
+    <div class="loader-dots">
+        <span></span><span></span><span></span>
+    </div>
 </div>
 
 {{-- NAVBAR — translucent → solid on scroll --}}

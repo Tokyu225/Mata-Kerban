@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 
 export const metadata: Metadata = {
-  title: "Sistem Informasi & WebGIS Dusun Kerban",
+  title: "Kerban",
   description:
     "Sistem Informasi dan WebGIS interaktif untuk Dusun Kerban. Pantau laporan warga, peta interaktif, dan informasi desa.",
   icons: { icon: "/favicon.ico" },

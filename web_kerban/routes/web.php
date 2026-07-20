@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\LaporController;
@@ -46,3 +47,19 @@ Route::post('/lapor/store', [LaporController::class, 'store']);
 Route::put('/lapor/{id}', [LaporController::class, 'update']);
 Route::delete('/lapor/{id}', [LaporController::class, 'destroy']);
 Route::get('/lapor/geojson', [LaporController::class, 'geojson']);
+
+// ── Keep-alive ping for external cron services (cron-job.org, etc.) ──
+// Hits the same Supabase keep-alive command via HTTP.
+// Call: GET /api/keepalive?token=YOUR_CRON_SECRET
+Route::get('/api/keepalive', function () {
+    $secret = env('KEEPALIVE_CRON_SECRET', 'kerban-keepalive-2024');
+    if (request('token') !== $secret) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+    Artisan::call('keepalive:supabase');
+    return response()->json([
+        'status'  => 'ok',
+        'output'  => trim(Artisan::output()),
+        'time'    => now()->toIso8601String(),
+    ]);
+});

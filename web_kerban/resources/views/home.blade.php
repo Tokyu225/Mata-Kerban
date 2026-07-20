@@ -133,49 +133,208 @@
         margin-bottom: 30px;
     }
 
-    /* Sambutan */
+    /* ── Sambutan ──────────────────────────────────────────────── */
     .sambutan-section {
-        background: linear-gradient(135deg, #f9fbf9 0%, #f0f7f1 100%);
-        padding: 80px 0;
+        background: linear-gradient(175deg, #f8fcf9 0%, #eaf5ed 40%, #f4f9f5 100%);
+        padding: 100px 0;
+        position: relative;
+        overflow: hidden;
     }
+    .sambutan-section::before {
+        content: "";
+        position: absolute;
+        top: -80px;
+        right: -80px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, rgba(47,111,62,0.06) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    .sambutan-section::after {
+        content: "";
+        position: absolute;
+        bottom: -60px;
+        left: -40px;
+        width: 220px;
+        height: 220px;
+        background: radial-gradient(circle, rgba(47,111,62,0.05) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+    .sambutan-section .container {
+        position: relative;
+        z-index: 1;
+    }
+
+    .sambutan-badge {
+        display: inline-block;
+        background: linear-gradient(135deg, #2f6f3e, #4a9e5e);
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 6px 18px;
+        border-radius: 50px;
+        margin-bottom: 28px;
+    }
+
+    .sambutan-title {
+        font-weight: 800;
+        font-size: 2.4rem;
+        color: #1a3c1f;
+        margin-bottom: 8px;
+        line-height: 1.3;
+    }
+    .sambutan-subtitle {
+        color: #6b9e78;
+        font-size: 1.05rem;
+        margin-bottom: 40px;
+    }
+
     .sambutan-card {
         border: none;
-        border-radius: 24px;
-        overflow: hidden;
-        box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+        border-radius: 28px;
+        overflow: visible;
+        box-shadow: 0 8px 40px rgba(0,0,0,0.07), 0 2px 8px rgba(0,0,0,0.04);
         background: #fff;
+        padding: 0;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .sambutan-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 48px rgba(0,0,0,0.10), 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    /* Photo area */
+    .sambutan-photo-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    .sambutan-photo-ring {
+        position: absolute;
+        inset: -10px;
+        border-radius: 50%;
+        border: 3px dashed rgba(47,111,62,0.25);
+        animation: spinSlow 25s linear infinite;
+    }
+    @keyframes spinSlow {
+        from { transform: rotate(0deg); }
+        to   { transform: rotate(360deg); }
     }
     .sambutan-photo {
-        width: 160px;
-        height: 160px;
+        width: 170px;
+        height: 170px;
         border-radius: 50%;
         object-fit: cover;
-        border: 4px solid #2f6f3e;
-        box-shadow: 0 4px 16px rgba(47,111,62,0.2);
+        border: 5px solid #fff;
+        box-shadow: 0 8px 32px rgba(47,111,62,0.20), 0 0 0 2px rgba(47,111,62,0.15);
+        position: relative;
+        z-index: 1;
     }
     .sambutan-photo-placeholder {
-        width: 160px;
-        height: 160px;
+        width: 170px;
+        height: 170px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #2f6f3e, #4a9e5e);
+        background: linear-gradient(135deg, #2f6f3e 0%, #4a9e5e 50%, #5cb870 100%);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 3rem;
+        font-size: 3.4rem;
         color: white;
-        font-weight: 700;
-        border: 4px solid #2f6f3e;
-        box-shadow: 0 4px 16px rgba(47,111,62,0.2);
+        border: 5px solid #fff;
+        box-shadow: 0 8px 32px rgba(47,111,62,0.20), 0 0 0 2px rgba(47,111,62,0.15);
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Quote styling */
+    .sambutan-quote-wrapper {
+        position: relative;
+        padding-left: 28px;
+        border-left: 4px solid rgba(47,111,62,0.15);
+    }
+    .sambutan-quote-icon {
+        position: absolute;
+        top: -14px;
+        left: -17px;
+        width: 32px;
+        height: 32px;
+        background: #2f6f3e;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 0.85rem;
     }
     .sambutan-quote {
         font-style: italic;
-        color: #555;
-        line-height: 1.8;
+        color: #4a5568;
+        line-height: 1.9;
         font-size: 1.05rem;
+        margin-bottom: 20px;
+    }
+    .sambutan-quote:last-child {
+        margin-bottom: 0;
+    }
+
+    /* Name block */
+    .sambutan-name-block {
+        margin-top: 32px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .sambutan-name-line {
+        width: 40px;
+        height: 3px;
+        background: linear-gradient(90deg, #2f6f3e, #5cb870);
+        border-radius: 2px;
     }
     .sambutan-name {
-        color: #2f6f3e;
+        color: #1a3c1f;
         font-weight: 700;
+        font-size: 1.25rem;
+        margin: 0;
+    }
+    .sambutan-role {
+        color: #6b9e78;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-top: 2px;
+    }
+
+    /* Signature accent */
+    .sambutan-signature {
+        margin-top: 28px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.85rem;
+        color: #8aa896;
+    }
+    .sambutan-signature i {
+        font-size: 1.3rem;
+        color: #2f6f3e;
+    }
+
+    @media (max-width: 767px) {
+        .sambutan-section { padding: 60px 0; }
+        .sambutan-title { font-size: 1.7rem; }
+        .sambutan-card { border-radius: 20px; }
+        .sambutan-photo, .sambutan-photo-placeholder {
+            width: 130px;
+            height: 130px;
+        }
+        .sambutan-photo-placeholder { font-size: 2.6rem; }
+        .sambutan-quote-wrapper {
+            padding-left: 20px;
+            border-left: none;
+            border-top: 4px solid rgba(47,111,62,0.15);
+            padding-top: 24px;
+            margin-top: 8px;
+        }
+        .sambutan-quote-icon { top: -16px; left: -16px; }
     }
 
     /* Sejarah */
@@ -254,30 +413,56 @@
 {{-- SAMBUTAN KEPALA DUSUN --}}
 <div class="sambutan-section">
     <div class="container">
-        <h3 class="section-title text-center mb-5">Sugeng Rawuh, Selamat Datang di Jendela Digital Kami</h3>
+        <div class="text-center mb-5">
+            <span class="sambutan-badge">Sambutan</span>
+            <h2 class="sambutan-title">Kepala Dusun Kerban</h2>
+            <p class="sambutan-subtitle">Sugeng Rawuh — Selamat datang di jendela digital kami</p>
+        </div>
 
         <div class="sambutan-card p-4 p-md-5">
-            <div class="row align-items-center">
-                <div class="col-md-4 text-center mb-4 mb-md-0">
-                    <div class="sambutan-photo-placeholder">
-                        <i class="bi bi-person-fill"></i>
+            <div class="row align-items-center g-4">
+                <div class="col-md-4 text-center">
+                    <div class="sambutan-photo-wrapper">
+                        <div class="sambutan-photo-ring"></div>
+                        <div class="sambutan-photo-placeholder">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-8">
-                    <p class="sambutan-quote mb-4">
-                        Dengan penuh rasa syukur, saya mewakili seluruh warga Dusun Kerban menyambut Anda.
-                        Website ini adalah cerminan semangat kami: terbuka, informatif, dan siap menyambut
-                        dunia sambil tetap berpegang teguh pada akar budaya dan nilai-nilai luhur kita.
-                    </p>
-                    <p class="sambutan-quote mb-4">
-                        Visi kami adalah menjadikan Kerban dusun percontohan yang mandiri, berbudaya,
-                        dan sejahtera. Kami mengundang Anda untuk menjelajahi setiap sudut digital dusun
-                        kami dan menantikan kunjungan Anda secara langsung. Matur nuwun.
-                    </p>
-                    <div class="mt-4">
-                        <h5 class="sambutan-name mb-1">Sigit Zuli Susanto</h5>
-                        <small class="text-muted">Kepala Dusun Kerban</small>
+                    <div class="sambutan-quote-wrapper">
+                        <div class="sambutan-quote-icon">
+                            <i class="bi bi-quote"></i>
+                        </div>
+                        <p class="sambutan-quote">
+                            Dengan penuh rasa syukur, saya mewakili seluruh warga Dusun Kerban menyambut Anda.
+                            Website ini adalah cerminan semangat kami: terbuka, informatif, dan siap menyambut
+                            dunia sambil tetap berpegang teguh pada akar budaya dan nilai-nilai luhur kita.
+                        </p>
+                        <p class="sambutan-quote">
+                            Visi kami adalah menjadikan Kerban dusun percontohan yang mandiri, berbudaya,
+                            dan sejahtera. Kami mengundang Anda untuk menjelajahi setiap sudut digital dusun
+                            kami dan menantikan kunjungan Anda secara langsung. Matur nuwun.
+                        </p>
                     </div>
+
+                    <div class="sambutan-name-block">
+                        <div class="sambutan-name-line"></div>
+                        <div>
+                            <h5 class="sambutan-name">Sigit Zuli Susanto</h5>
+                            <p class="sambutan-role">Kepala Dusun Kerban</p>
+                        </div>
+                    </div>
+
+                    <div class="sambutan-signature">
+                        <i class="bi bi-geo-alt-fill"></i>
+                        <span>Dusun Kerban, Desa Kerban — menyapa dunia</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                 </div>
             </div>
         </div>

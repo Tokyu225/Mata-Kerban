@@ -98,25 +98,70 @@ export default function HomePage() {
       </section>
 
       {/* Sambutan */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-5xl">
-          <div className="glass-card p-8 md:p-12">
+      <section className="py-24 px-4 relative overflow-hidden bg-gradient-to-b from-emerald-50/60 via-white to-emerald-50/30 dark:from-emerald-950/20 dark:via-background dark:to-emerald-950/10">
+        {/* Decorative blobs */}
+        <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-emerald-500/5 dark:bg-emerald-500/3 blur-3xl" />
+        <div className="absolute -bottom-16 -left-12 w-56 h-56 rounded-full bg-emerald-600/5 dark:bg-emerald-600/3 blur-3xl" />
+
+        <div className="container mx-auto max-w-5xl relative z-10">
+          {/* Header */}
+          <div className="text-center mb-10">
+            <span className="inline-block bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-xs font-semibold tracking-widest uppercase px-5 py-1.5 rounded-full mb-6">
+              Sambutan
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-emerald-950 dark:text-emerald-50 mb-2">
+              Kepala Dusun Kerban
+            </h2>
+            <p className="text-emerald-700/60 dark:text-emerald-400/60 text-lg">
+              Sugeng Rawuh — Selamat datang di jendela digital kami
+            </p>
+          </div>
+
+          {/* Card */}
+          <div className="bg-white dark:bg-card rounded-3xl shadow-xl shadow-emerald-900/5 dark:shadow-black/20 p-8 md:p-12 hover:shadow-2xl hover:shadow-emerald-900/8 dark:hover:shadow-emerald-500/5 transition-shadow duration-500">
             <div className="flex flex-col md:flex-row gap-8 items-center">
-              <div className="w-32 h-32 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
-                <i className="bi bi-person-fill text-5xl text-emerald-600 dark:text-emerald-400" />
+              {/* Photo */}
+              <div className="flex-shrink-0 relative group">
+                {/* Spinning ring */}
+                <div className="absolute -inset-3 rounded-full border-2 border-dashed border-emerald-400/20 dark:border-emerald-500/15 animate-[spin_30s_linear_infinite]" />
+                <div className="w-40 h-40 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-emerald-600 via-emerald-500 to-emerald-400 flex items-center justify-center shadow-2xl shadow-emerald-500/25 ring-[5px] ring-white dark:ring-card relative z-10 group-hover:scale-105 transition-transform duration-500">
+                  <i className="bi bi-person-fill text-6xl md:text-7xl text-white" />
+                </div>
               </div>
-              <div>
-                <GradientText colors={["#4ade80", "#22c55e", "#4ade80", "#16a34a", "#4ade80"]} animationSpeed={6} className="text-xs font-medium uppercase tracking-wider">
-                  Sambutan
-                </GradientText>
-                <h2 className="text-2xl md:text-3xl font-bold mt-2 mb-4">Kepala Dusun Kerban</h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  Selamat datang di portal resmi WebGIS Dusun
-                  Kerban. Platform ini hadir sebagai wujud komitmen kami dalam
-                  memberikan pelayanan informasi yang transparan, akurat, dan
-                  mudah diakses oleh seluruh warga. Mari bersama membangun Dusun
-                  Kerban yang lebih maju dan sejahtera.
-                </p>
+
+              {/* Quote */}
+              <div className="flex-1">
+                <div className="relative pl-7 border-l-[3px] border-emerald-200 dark:border-emerald-800">
+                  {/* Quote icon */}
+                  <div className="absolute -top-3 -left-[17px] w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center">
+                    <i className="bi bi-quote text-white text-sm" />
+                  </div>
+                  <p className="italic text-muted-foreground leading-relaxed text-[1.05rem] mb-5">
+                    Dengan penuh rasa syukur, saya mewakili seluruh warga Dusun Kerban menyambut Anda. Website ini adalah cerminan semangat kami: terbuka, informatif, dan siap menyambut dunia sambil tetap berpegang teguh pada akar budaya dan nilai-nilai luhur kita.
+                  </p>
+                  <p className="italic text-muted-foreground leading-relaxed text-[1.05rem]">
+                    Visi kami adalah menjadikan Kerban dusun percontohan yang mandiri, berbudaya, dan sejahtera. Kami mengundang Anda untuk menjelajahi setiap sudut digital dusun kami dan menantikan kunjungan Anda secara langsung. Matur nuwun.
+                  </p>
+                </div>
+
+                {/* Name */}
+                <div className="flex items-center gap-3.5 mt-7">
+                  <div className="w-10 h-0.5 rounded-full bg-gradient-to-r from-emerald-600 to-emerald-400" />
+                  <div>
+                    <h4 className="font-bold text-xl text-emerald-950 dark:text-emerald-100">
+                      Sigit Zuli Susanto
+                    </h4>
+                    <p className="text-sm text-emerald-600/70 dark:text-emerald-400/60 font-medium">
+                      Kepala Dusun Kerban
+                    </p>
+                  </div>
+                </div>
+
+                {/* Signature line */}
+                <div className="flex items-center gap-2.5 mt-5 text-sm text-muted-foreground/60">
+                  <i className="bi bi-geo-alt-fill text-emerald-600 dark:text-emerald-500" />
+                  <span>Dusun Kerban, Desa Kerban — menyapa dunia</span>
+                </div>
               </div>
             </div>
           </div>

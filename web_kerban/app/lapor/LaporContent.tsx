@@ -4,6 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+// Fix Leaflet default marker icons in Next.js/Webpack
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+});
+
 const KATEGORI = ["Infrastruktur", "Lingkungan", "Keamanan", "Kesehatan", "Pendidikan", "Sosial", "Lainnya"];
 
 export default function LaporContent() {
@@ -40,17 +48,18 @@ export default function LaporContent() {
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((pos) => {
+        if (!mapRef.current) return;
         const { latitude, longitude } = pos.coords;
-        map.setView([latitude, longitude], 16);
+        mapRef.current.setView([latitude, longitude], 16);
         setCoords({ lat: latitude, lng: longitude });
         setLat(latitude.toFixed(7));
         setLng(longitude.toFixed(7));
-        if (markerRef.current) map.removeLayer(markerRef.current);
-        markerRef.current = L.marker([latitude, longitude]).bindPopup("Lokasi Anda").addTo(map).openPopup();
+        if (markerRef.current) mapRef.current.removeLayer(markerRef.current);
+        markerRef.current = L.marker([latitude, longitude]).bindPopup("Lokasi Anda").addTo(mapRef.current).openPopup();
       }, () => {}, { enableHighAccuracy: true });
     }
 
-    fetch("/api/lapors/geojson").then((r) => r.json()).then((data) => {
+    fetch("/api/lapors/geojson").then((r) => { if (!r.ok) throw new Error("API error"); return r.json(); }).then((data) => {
       L.geoJSON(data, {
         pointToLayer: (_, latlng) => L.marker(latlng),
         onEachFeature: (feature, layer) => {
@@ -58,7 +67,7 @@ export default function LaporContent() {
           layer.bindPopup(`<div style="min-width:160px"><strong>${p.judul}</strong>${p.namaPelapor ? `<br><small>${p.namaPelapor}</small>` : ""}${p.kategori ? `<br><span style="font-size:11px;background:#e2e8f0;padding:2px 6px;border-radius:10px">${p.kategori}</span>` : ""}</div>`);
         },
       }).addTo(map);
-    });
+    }).catch(() => {});
 
     mapRef.current = map;
     return () => { map.remove(); mapRef.current = null; };

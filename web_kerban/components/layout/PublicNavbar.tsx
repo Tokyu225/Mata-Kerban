@@ -32,37 +32,44 @@ export function PublicNavbar() {
 
   return (
     <>
-      <nav className={cn("fixed top-3 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 px-5 py-3 rounded-full", scrolled ? "glass shadow-lg shadow-black/10 dark:shadow-black/30" : "bg-transparent")}>
-        <div className="flex items-center gap-1 sm:gap-2">
-          <Link href="/" className="flex items-center gap-2 mr-2 text-foreground hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors">
-            <i className="bi bi-geo-alt-fill text-xl text-emerald-600 dark:text-emerald-400" />
-            <span className="font-display font-bold text-sm hidden sm:inline">DUSUN KERBAN</span>
+      <nav className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 sm:px-8 py-3", scrolled ? "glass border-b border-border/50 shadow-sm" : "bg-transparent")}>
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2.5 text-foreground hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors shrink-0 mr-4 group/brand">
+            <i className="bi bi-geo-alt-fill text-xl text-emerald-600 dark:text-emerald-400 group-hover/brand:scale-110 group-hover/brand:-translate-y-0.5 transition-transform duration-300" />
+            <span className="font-display font-bold text-sm">KERBAN</span>
           </Link>
-          <div className="hidden md:flex items-center gap-1">
+          <div className="hidden md:flex items-center gap-1.5">
             {NAV_ITEMS.filter((item) => !item.auth || session).map((item) => (
-              <Link key={item.href} href={item.href} className={cn("px-4 py-2 rounded-full text-sm font-medium transition-all duration-200", isActive(item.href) ? "bg-emerald-600 text-white shadow-md" : "text-foreground/70 hover:text-foreground hover:bg-muted/50")}>
-                <i className={cn(item.icon, "mr-1.5")} />{item.label}
+              <Link key={item.href} href={item.href} className={cn(
+                "relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95",
+                isActive(item.href)
+                  ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 ring-1 ring-emerald-500/50"
+                  : "text-foreground/60 hover:text-foreground hover:bg-muted/50 hover:shadow-md"
+              )}>
+                <i className={cn(item.icon, "mr-1.5 text-xs")} />{item.label}
               </Link>
             ))}
           </div>
-          <div className="flex items-center gap-1.5 ml-2">
-            <button onClick={toggleTheme} className="p-2.5 rounded-full text-foreground/70 hover:text-foreground hover:bg-muted/50 transition-all" aria-label="Toggle theme">
-              <i className={cn("bi", theme === "dark" ? "bi-sun-fill" : "bi-moon-fill")} />
+          <div className="flex items-center gap-1.5">
+            <button onClick={toggleTheme} className="p-2 rounded-xl text-foreground/60 hover:text-foreground hover:bg-muted/50 hover:scale-110 active:scale-90 transition-all duration-300 group/theme" aria-label="Toggle theme">
+              <i className={cn("bi text-sm transition-transform duration-500", theme === "dark" ? "bi-sun-fill group-hover/theme:rotate-90" : "bi-moon-fill group-hover/theme:-rotate-12")} />
             </button>
-            <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2.5 rounded-full text-foreground/70 hover:text-foreground hover:bg-muted/50 transition-all hidden sm:flex" aria-label="Map settings">
-              <i className="bi bi-sliders" />
-            </button>
+            {pathname === "/map" && (
+              <button onClick={() => setSettingsOpen(!settingsOpen)} className="p-2 rounded-xl text-foreground/60 hover:text-foreground hover:bg-muted/50 hover:scale-110 active:scale-90 transition-all duration-300 hidden sm:flex" aria-label="Map settings">
+                <i className={cn("bi bi-sliders text-sm transition-transform duration-300", settingsOpen && "rotate-90")} />
+              </button>
+            )}
             {session ? (
-              <button onClick={() => signOut()} className="p-2.5 rounded-full text-foreground/70 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition-all" aria-label="Logout">
-                <i className="bi bi-box-arrow-right" />
+              <button onClick={() => signOut()} className="p-2 rounded-xl text-foreground/60 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 hover:scale-110 active:scale-90 transition-all duration-300" aria-label="Logout">
+                <i className="bi bi-box-arrow-right text-sm" />
               </button>
             ) : (
-              <Link href="/login" className="px-4 py-2 rounded-full text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-700 transition-all shadow-md">
+              <Link href="/login" className="px-4 py-2 rounded-xl text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-500 hover:scale-105 active:scale-95 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-emerald-500/30 ring-1 ring-emerald-500/30">
                 <i className="bi bi-person mr-1" /><span className="hidden sm:inline">Masuk</span>
               </Link>
             )}
-            <button onClick={() => setMenuOpen(!menuOpen)} className="p-2.5 rounded-full text-foreground/70 hover:text-foreground hover:bg-muted/50 transition-all md:hidden" aria-label="Menu">
-              <i className={cn("bi", menuOpen ? "bi-x-lg" : "bi-list")} />
+            <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 rounded-xl text-foreground/60 hover:text-foreground hover:bg-muted/50 hover:scale-110 active:scale-90 transition-all duration-300 md:hidden" aria-label="Menu">
+              <i className={cn("bi text-sm transition-transform duration-300", menuOpen ? "bi-x-lg rotate-90" : "bi-list")} />
             </button>
           </div>
         </div>
@@ -71,7 +78,7 @@ export function PublicNavbar() {
       {menuOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
-          <div className="absolute top-20 left-4 right-4 glass-card p-4 flex flex-col gap-1 animate-fade-in">
+          <div className="absolute top-14 left-4 right-4 glass-card p-4 flex flex-col gap-1 animate-fade-in">
             {NAV_ITEMS.filter((item) => !item.auth || session).map((item) => (
               <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className={cn("px-4 py-3 rounded-xl text-sm font-medium transition-all", isActive(item.href) ? "bg-emerald-600 text-white" : "text-foreground/70 hover:text-foreground hover:bg-muted/50")}>
                 <i className={cn(item.icon, "mr-3")} />{item.label}
@@ -81,8 +88,8 @@ export function PublicNavbar() {
         </div>
       )}
 
-      {settingsOpen && (
-        <div className="fixed top-20 right-4 z-50 glass-card p-4 w-64 animate-fade-in">
+      {pathname === "/map" && settingsOpen && (
+        <div className="fixed top-14 right-4 z-50 glass-card p-4 w-64 animate-fade-in">
           <h3 className="font-semibold text-sm mb-3">Pengaturan Peta</h3>
           <div className="space-y-2">
             {[{ id: "satellite", label: "Satelit", icon: "bi-satellite" }, { id: "street", label: "Jalan", icon: "bi-map" }, { id: "topo", label: "Topografi", icon: "bi-geo-alt" }].map((item) => (
@@ -93,7 +100,7 @@ export function PublicNavbar() {
           </div>
         </div>
       )}
-      <div className="h-20" />
+      <div className="h-14" />
     </>
   );
 }

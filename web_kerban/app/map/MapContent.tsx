@@ -170,18 +170,20 @@ export default function MapContent() {
 
     if (isAdmin) {
       import("leaflet-draw").then(() => {
-        const L_Draw = (window as any).L.Draw;
-        if (L_Draw && mapRef.current) {
-          const m = mapRef.current;
+        const m = mapRef.current;
+        if (!m) return;
+        const DrawControl = (L.Control as any).Draw;
+        const DrawEvent = (L as any).Draw.Event;
+        if (DrawControl) {
           drawnItemsRef.current = new L.FeatureGroup();
           m.addLayer(drawnItemsRef.current);
-          const drawControl = new L_Draw.Control({
+          const drawControl = new DrawControl({
             position: "topright",
             draw: { polygon: true, polyline: true, rectangle: true, circle: false, marker: true, circlemarker: false },
             edit: { featureGroup: drawnItemsRef.current },
           });
           m.addControl(drawControl);
-          m.on(L_Draw.Event.CREATED, (e: any) => {
+          m.on(DrawEvent.CREATED, (e: any) => {
             drawnItemsRef.current?.clearLayers();
             drawnItemsRef.current?.addLayer(e.layer);
             setPendingGeoJSON(e.layer.toGeoJSON());

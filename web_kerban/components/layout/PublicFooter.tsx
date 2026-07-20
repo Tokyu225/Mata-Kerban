@@ -8,9 +8,9 @@ export function PublicFooter() {
           <div>
             <div className="flex items-center gap-2 mb-3">
               <i className="bi bi-geo-alt-fill text-2xl text-primary-600 dark:text-primary-400" />
-              <span className="font-display font-bold text-lg">DUSUN KERBAN</span>
+              <span className="font-display font-bold text-lg">KERBAN</span>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed">Sistem Informasi & WebGIS interaktif untuk pelayanan dan keterbukaan informasi Dusun Kerban.</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">Platform WebGIS interaktif untuk pelayanan dan keterbukaan informasi Dusun Kerban.</p>
           </div>
           <div>
             <h4 className="font-semibold mb-3">Tautan Cepat</h4>
