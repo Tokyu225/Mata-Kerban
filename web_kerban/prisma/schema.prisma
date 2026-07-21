@@ -2,12 +2,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
-// For local dev: use SQLite
-// For production (Supabase): switch provider to "postgresql"
-//   and add: directUrl = env("DIRECT_DATABASE_URL")
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model User {
