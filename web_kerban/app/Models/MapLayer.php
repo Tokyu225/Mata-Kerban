@@ -12,10 +12,14 @@ class MapLayer extends Model
         'name',
         'type',
         'geojson',
-        'category'
+        'category',
+        'label_field',
+        'symbology',
+        'source_layer'
     ];
 
     protected $casts = [
-        'geojson' => 'array'
+        'geojson' => 'array',
+        'symbology' => 'array'
     ];
 }

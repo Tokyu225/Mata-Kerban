@@ -4,10 +4,13 @@ import { useState, useRef, useCallback } from "react";
 import Link from "next/link";
 import ShinyText from "@/components/reactbits/ShinyText";
 import GradientText from "@/components/reactbits/GradientText";
+import SejarahAudio from "@/components/SejarahAudio";
+import KerbanDalamAngka from "@/components/KerbanDalamAngka";
 
 const MENU_ITEMS = [
+  { href: "/sejarah", icon: "bi-book-fill", title: "Sejarah", desc: "Warisan & asal-usul Kerban", color: "from-amber-400 to-orange-500" },
   { href: "/map", icon: "bi-map-fill", title: "Peta Interaktif", desc: "Jelajahi WebGIS Dusun Kerban", color: "from-emerald-400 to-teal-500" },
-  { href: "/lapor", icon: "bi-send-fill", title: "Lapor Warga", desc: "Sampaikan laporan Anda", color: "from-amber-400 to-orange-500" },
+  { href: "/lapor", icon: "bi-send-fill", title: "Lapor Warga", desc: "Sampaikan laporan Anda", color: "from-rose-400 to-red-500" },
   { href: "/quiz", icon: "bi-patch-question-fill", title: "Quiz Interaktif", desc: "Uji pengetahuan tentang Kerban", color: "from-lime-400 to-green-500" },
   { href: "/dashboard", icon: "bi-speedometer2", title: "Dashboard", desc: "Kelola data dan laporan", color: "from-emerald-500 to-green-600" },
 ];
@@ -21,10 +24,10 @@ const PRODUK_UNGGULAN = [
 
 const TEAM_MEMBERS = [
   { src: "/images/aboutus.jpeg", name: "Tim Kerban", role: "Bersama" },
-  { src: "/images/har.jpeg", name: "Har", role: "Anggota" },
-  { src: "/images/shiro.jpeg", name: "Shiro", role: "Anggota" },
-  { src: "/images/eva.jpeg", name: "Eva", role: "Anggota" },
-  { src: "/images/shawal.jpeg", name: "Shawal", role: "Anggota" },
+  { src: "/images/har.jpeg", name: "Hardika Ahmad Tegar P.", role: "Anggota" },
+  { src: "/images/shiro.jpeg", name: "Dzaki Jumayyel M.", role: "Anggota" },
+  { src: "/images/eva.jpeg", name: "Eva Azalia", role: "Anggota" },
+  { src: "/images/shawal.jpeg", name: "Anissa Syawalini Putri A.", role: "Anggota" },
 ];
 
 export default function HomePage() {
@@ -56,7 +59,7 @@ export default function HomePage() {
         <div className="absolute inset-0">
           {showVideo ? (
             <video autoPlay muted loop playsInline className="w-full h-full object-cover" poster="/videos/placeholder.mp4">
-              <source src="/videos/drone_place.mp4" type="video/mp4" />
+              <source src="/videos/dji-trim.mp4" type="video/mp4" />
             </video>
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-emerald-950 via-green-950 to-stone-950" />
@@ -83,7 +86,7 @@ export default function HomePage() {
             <Link href="/map" className="btn-primary text-base px-8 py-3">
               <i className="bi bi-map mr-2" />Jelajahi Peta
             </Link>
-            <Link href="/lapor" className="btn-outline text-base px-8 py-3">
+            <Link href="/lapor" className="btn-outline text-base px-8 py-3 cursor-target">
               <i className="bi bi-send mr-2" />Buat Laporan
             </Link>
             <button onClick={() => setShowVideo(!showVideo)} className="p-3 rounded-xl glass text-foreground/70 hover:text-foreground transition-all" title={showVideo ? "Sembunyikan video" : "Tampilkan video"}>
@@ -169,18 +172,87 @@ export default function HomePage() {
       </section>
 
       {/* Sejarah */}
-      <section className="py-16 px-4 bg-muted/50">
+      <section className="py-20 px-4 bg-gradient-to-b from-muted/30 via-muted/50 to-muted/30">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center mb-12">
-            <GradientText colors={["#4ade80", "#16a34a", "#4ade80"]} animationSpeed={5} className="text-xs font-medium uppercase tracking-wider">
-              Mengenal
-            </GradientText>
-            <h2 className="text-3xl md:text-4xl font-bold mt-2">Sejarah Dusun Kerban</h2>
+            <span className="inline-block bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold tracking-widest uppercase px-5 py-1.5 rounded-full mb-5">
+              Warisan Leluhur
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950 dark:text-emerald-50">
+              Sejarah Dusun Kerban
+            </h2>
+            <p className="text-muted-foreground mt-2">Cerita di balik nama yang kita banggakan</p>
           </div>
-          <div className="glass-card p-8 md:p-12">
-            <p className="text-muted-foreground leading-relaxed text-justify">
-              Dusun Kerban merupakan salah satu dusun yang memiliki sejarah panjang dalam perkembangan wilayah setempat. Berawal dari sebuah pemukiman kecil, Dusun Kerban terus berkembang menjadi komunitas yang dinamis dengan tetap mempertahankan kearifan lokal dan nilai-nilai gotong royong. Kini, dengan hadirnya teknologi informasi dan pemetaan digital, Dusun Kerban siap melangkah menuju era modernisasi tanpa meninggalkan akar budayanya.
-            </p>
+
+          {/* Photo */}
+          <div className="mb-10 max-w-2xl mx-auto">
+            <div className="relative rounded-2xl overflow-hidden shadow-xl shadow-emerald-900/10 group">
+              <img
+                src="/images/tembang.jpg"
+                alt="Sejarah Dusun Kerban"
+                className="w-full h-64 md:h-80 object-cover group-hover:scale-105 transition-transform duration-700"
+                onError={(e) => {
+                  const el = e.currentTarget;
+                  el.style.display = "none";
+                  const parent = el.parentElement;
+                  if (parent && !parent.querySelector(".fallback")) {
+                    const fb = document.createElement("div");
+                    fb.className = "fallback w-full h-64 md:h-80 bg-gradient-to-br from-amber-100 via-orange-50 to-amber-100 dark:from-amber-950/40 dark:via-orange-950/30 dark:to-amber-950/40 flex items-center justify-center";
+                    fb.innerHTML = `<div class="text-center"><i class="bi bi-image text-5xl text-amber-400/50 dark:text-amber-500/30"></i><p class="text-sm text-muted-foreground mt-3">Tambahkan <code class="bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded text-xs">tembang.jpg</code> di <code class="bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded text-xs">public/images/</code></p></div>`;
+                    parent.appendChild(fb);
+                  }
+                }}
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+            </div>
+          </div>
+
+          {/* Audio Recording */}
+          <div className="mb-10 max-w-2xl mx-auto">
+            <div className="glass-card p-5">
+              <SejarahAudio />
+            </div>
+          </div>
+
+          {/* Two origin stories */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Story 1: Kerepan */}
+            <div className="group glass-card overflow-hidden hover:shadow-2xl hover:shadow-amber-900/5 transition-all duration-500">
+              <div className="h-2 bg-gradient-to-r from-amber-500 to-orange-400" />
+              <div className="p-8">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+                    <i className="bi bi-sunset-fill text-amber-600 dark:text-amber-400 text-lg" />
+                  </div>
+                  <h3 className="font-bold text-lg text-emerald-950 dark:text-emerald-50">Versi "Kerepan"</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed text-[0.95rem]">
+                  Kerban memiliki sejarah historis yang diyakini masyarakat sebagai sebuah nama dusun yang merefleksikan kebiasaan tradisi masyarakat Jawa. Orang Jawa meyakini kepercayaan terdahulu yakni <em>&ldquo;Ana Dewa Ngangklang Jagat&rdquo;</em> (Ada Dewa yang sedang berkeliling Dunia), yang mana ketika menjelang maghrib diharuskan setiap orang berhenti beraktivitas dan istirahat.
+                </p>
+                <p className="text-muted-foreground leading-relaxed text-[0.95rem] mt-3">
+                  Hal ini terus dilakukan sehingga menjadi suatu kebiasaan atau dalam Bahasa Jawa disebut <strong>&ldquo;Kerepan&rdquo;</strong>. <strong>Kerban</strong> sendiri merupakan simplifikasi dari kata <em>kerepan</em> yang berarti kebiasaan luhur yang dilakukan oleh orang Jawa terdahulu hingga sekarang.
+                </p>
+              </div>
+            </div>
+
+            {/* Story 2: Korban */}
+            <div className="group glass-card overflow-hidden hover:shadow-2xl hover:shadow-red-900/5 transition-all duration-500">
+              <div className="h-2 bg-gradient-to-r from-red-500 to-rose-400" />
+              <div className="p-8">
+                <div className="flex items-center gap-3 mb-5">
+                  <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                    <i className="bi bi-shield-fill text-red-600 dark:text-red-400 text-lg" />
+                  </div>
+                  <h3 className="font-bold text-lg text-emerald-950 dark:text-emerald-50">Versi "Korban"</h3>
+                </div>
+                <p className="text-muted-foreground leading-relaxed text-[0.95rem]">
+                  Dalam versi sejarah yang lain, istilah Dusun Kerban juga dikaitkan dengan makna <strong>&ldquo;Korban&rdquo;</strong> atau <strong>&ldquo;Pengorbanan&rdquo;</strong> yang berkaitan dengan cerita perjuangan <strong>Pangeran Diponegoro</strong>.
+                </p>
+                <p className="text-muted-foreground leading-relaxed text-[0.95rem] mt-3">
+                  Menurut penuturan lokal, pada awal <strong>Perang Jawa tahun 1825</strong>, pasukan Pangeran Diponegoro pernah membangun perkemahan dan menggali sumber air di wilayah Desa Sumberarum (salah satunya di Kerban). Banyaknya korban pada saat perlawanan terhadap kolonial Belanda menjadikan dusun Kerban sangat identik dengan simbol pengorbanan para pejuang terdahulu.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -196,7 +268,7 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {MENU_ITEMS.map((item) => (
-              <Link key={item.href} href={item.href} className="group glass-card p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl">
+              <Link key={item.href} href={item.href} className={`group glass-card p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl ${item.href !== "/map" ? "cursor-target" : ""}`}>
                 <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                   <i className={`bi ${item.icon} text-2xl text-white`} />
                 </div>
@@ -233,6 +305,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Kerban dalam Angka */}
+      <KerbanDalamAngka />
 
       {/* About Us */}
       <section className="py-20 px-4 overflow-hidden">
@@ -333,7 +408,7 @@ export default function HomePage() {
             <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
               Laporkan kondisi lingkungan, infrastruktur, atau kejadian di sekitar Dusun Kerban. Setiap laporan Anda sangat berarti.
             </p>
-            <Link href="/lapor" className="btn-primary text-base px-10 py-3.5 inline-block">
+            <Link href="/lapor" className="btn-primary text-base px-10 py-3.5 inline-block cursor-target">
               <i className="bi bi-send-fill mr-2" />Buat Laporan Sekarang
             </Link>
           </div>

@@ -75,7 +75,7 @@ export default function MapContent() {
   const { data: session } = useSession();
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
-  const layerRef = useRef<L.GeoJSON | null>(null);
+  const categoryLayersRef = useRef<Map<string, L.GeoJSON>>(new Map());
   const persillnyanRef = useRef<L.GeoJSON | null>(null);
   const drawnItemsRef = useRef<L.FeatureGroup | null>(null);
   const tileRef = useRef<L.TileLayer | null>(null);
@@ -91,8 +91,21 @@ export default function MapContent() {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showLegend, setShowLegend] = useState(true);
   const [visibleCategories, setVisibleCategories] = useState<Set<string>>(() => new Set(ALL_CATEGORY_KEYS));
+  // DB layer category toggles (from map_layers table)
+  const [dbCategories, setDbCategories] = useState<{ key: string; label: string; color: string; count: number }[]>([]);
+  const [visibleDbCategories, setVisibleDbCategories] = useState<Set<string>>(new Set());
 
   const isAdmin = (session?.user as any)?.role === "endministrator";
+
+  // Category display config
+  const CATEGORY_LABELS: Record<string, string> = {
+    toponim: "Toponim",
+    sarana: "Sarana Prasarana",
+    perairan: "Perairan",
+    transportasi: "Transportasi",
+    penggunaan_lahan: "Penggunaan Lahan",
+    persil: "Persil",
+  };
 
   const loadLayers = useCallback(async () => {
     if (!mapRef.current) return;
@@ -100,13 +113,113 @@ export default function MapContent() {
       const res = await fetch("/api/map-layers/geojson");
       if (!res.ok) return;
       const data = await res.json();
-      if (layerRef.current) mapRef.current.removeLayer(layerRef.current);
-      layerRef.current = L.geoJSON(data, {
-        onEachFeature: (feature, layer) => {
-          const props = feature.properties;
-          layer.bindPopup(`<div style="min-width:180px"><strong>${props.name}</strong>${props.category ? `<br><small>${props.category}</small>` : ""}</div>`);
-        },
-      }).addTo(mapRef.current);
+
+      // Remove old category layers
+      categoryLayersRef.current.forEach((layer) => mapRef.current?.removeLayer(layer));
+      categoryLayersRef.current.clear();
+
+      // Group features by category
+      const grouped: Record<string, any[]> = {};
+      data.features.forEach((f: any) => {
+        const cat = f.properties?.category || "lainnya";
+        if (!grouped[cat]) grouped[cat] = [];
+        grouped[cat].push(f);
+      });
+
+      // Build category list for legend
+      const catList: { key: string; label: string; color: string; count: number }[] = [];
+      const defaultColor = "#3388ff";
+
+      Object.entries(grouped).forEach(([cat, features]) => {
+        // Use first feature's color for legend icon
+        const firstSym = features[0]?.properties?.symbology || {};
+        const color = firstSym.color || firstSym.fillColor || defaultColor;
+
+        const geoJsonLayer = L.geoJSON(
+          { type: "FeatureCollection", features } as any,
+          {
+            // Per-feature style — each feature carries its own symbology
+            style: (feature) => {
+              const s = feature?.properties?.symbology || {};
+              const isPolygon = feature?.geometry?.type?.startsWith("Polygon") || feature?.geometry?.type?.startsWith("MultiPolygon");
+              const isLine = feature?.geometry?.type?.startsWith("LineString") || feature?.geometry?.type?.startsWith("MultiLineString");
+              return {
+                color: s.color || defaultColor,
+                fillColor: isPolygon ? (s.fillColor || s.color || defaultColor) : undefined,
+                fillOpacity: isPolygon ? (s.fillOpacity ?? 0.3) : undefined,
+                weight: s.weight ?? (isLine ? 3 : 2),
+                dashArray: s.dashArray ?? undefined,
+              };
+            },
+            pointToLayer: (feature, latlng) => {
+              const s = feature?.properties?.symbology || {};
+              return L.circleMarker(latlng, {
+                radius: s.radius ?? 6,
+                fillColor: s.fillColor || s.color || defaultColor,
+                color: s.color || defaultColor,
+                weight: s.weight ?? 1,
+                fillOpacity: s.fillOpacity ?? 0.8,
+              });
+            },
+            onEachFeature: (feature, layer) => {
+              const p = feature.properties;
+              const title = p.Toponimi || p.TOPONIM || p.Toponim || p.name || "(tanpa nama)";
+              const cat = p.category;
+              const plLabel = PL_LABELS[p.PL] || p.PL || "";
+              const detail = p.KET_DETAIL || plLabel || p.KETERANGAN || "";
+              const admin = [p.WADMPR, p.WADMKK, p.WADMKC, p.WADMKD]
+                .filter(Boolean)
+                .join(" → ");
+
+              let bodyRows = "";
+
+              if (cat === "persil" || cat === "penggunaan_lahan") {
+                bodyRows += `<tr><td>Guna Lahan</td><td><strong>${detail || "-"}</strong></td></tr>`;
+                if (p.DUSUN)   bodyRows += `<tr><td>Dusun</td><td>${p.DUSUN}</td></tr>`;
+                if (admin)     bodyRows += `<tr><td>Wilayah</td><td>${admin}</td></tr>`;
+                if (p.Id)      bodyRows += `<tr><td>ID Persil</td><td>${p.Id}</td></tr>`;
+              } else if (cat === "sarana") {
+                if (p.Sub_Unsur) bodyRows += `<tr><td>Sub Unsur</td><td>${p.Sub_Unsur}</td></tr>`;
+                if (p.Kelas)     bodyRows += `<tr><td>Kelas</td><td>${p.Kelas}</td></tr>`;
+              } else if (cat === "transportasi") {
+                if (p.Sub_Unsur) bodyRows += `<tr><td>Sub Unsur</td><td>${p.Sub_Unsur}</td></tr>`;
+                if (p.Kelas)     bodyRows += `<tr><td>Kelas</td><td>${p.Kelas}</td></tr>`;
+              } else if (cat === "perairan") {
+                if (p.Sub_Unsur) bodyRows += `<tr><td>Sub Unsur</td><td>${p.Sub_Unsur}</td></tr>`;
+                if (p.Kelas)     bodyRows += `<tr><td>Kelas</td><td>${p.Kelas}</td></tr>`;
+              } else if (cat === "toponim") {
+                if (p.KETERANGAN) bodyRows += `<tr><td>Keterangan</td><td>${p.KETERANGAN}</td></tr>`;
+              }
+
+              // Source
+              bodyRows += `<tr><td>Sumber</td><td style="color:#888;font-size:10px">${p.source_layer || "-"}</td></tr>`;
+
+              layer.bindPopup(`
+                <div style="min-width:200px;max-width:320px;font-family:system-ui,sans-serif">
+                  <div style="font-size:13px;font-weight:700;margin-bottom:6px;color:#1a1a1a;line-height:1.3">${title}</div>
+                  <table style="font-size:11px;width:100%;border-collapse:collapse">
+                    ${bodyRows}
+                  </table>
+                </div>
+              `);
+            },
+          }
+        );
+
+        geoJsonLayer.addTo(mapRef.current!);
+        categoryLayersRef.current.set(cat, geoJsonLayer);
+
+        catList.push({
+          key: cat,
+          label: CATEGORY_LABELS[cat] || cat,
+          color: color,
+          count: features.length,
+        });
+      });
+
+      setDbCategories(catList);
+      // All visible by default
+      setVisibleDbCategories(new Set(catList.map((c) => c.key)));
     } catch {} 
   }, []);
 
@@ -232,6 +345,28 @@ export default function MapContent() {
     });
   }, []);
 
+  // Toggle DB layer category visibility
+  const toggleDbCategory = useCallback((key: string) => {
+    setVisibleDbCategories((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      return next;
+    });
+  }, []);
+
+  // Apply DB category visibility
+  useEffect(() => {
+    if (!mapRef.current) return;
+    categoryLayersRef.current.forEach((layer, cat) => {
+      if (visibleDbCategories.has(cat)) {
+        if (!mapRef.current?.hasLayer(layer)) layer.addTo(mapRef.current!);
+      } else {
+        if (mapRef.current?.hasLayer(layer)) mapRef.current?.removeLayer(layer);
+      }
+    });
+  }, [visibleDbCategories]);
+
   // Apply category visibility to the persillnyan layer
   useEffect(() => {
     if (!persillnyanRef.current) return;
@@ -300,7 +435,7 @@ export default function MapContent() {
     }
   };
 
-  const mapHeight = isFullscreen ? "h-screen" : "h-[calc(100vh-5rem)]";
+  const mapHeight = isFullscreen ? "h-screen" : "h-[calc(100vh-3.5rem)]";
 
   return (
     <div className={`relative w-full ${mapHeight}`}>
@@ -318,7 +453,27 @@ export default function MapContent() {
           </button>
         </div>
         {showLegend && (
-          <div className="px-3 pb-3 space-y-1.5">
+          <div className="px-3 pb-3 space-y-1.5 max-h-[60vh] overflow-y-auto">
+            {/* ── DB Layer Toggles ── */}
+            {dbCategories.length > 0 && (
+              <>
+                <p className="text-[10px] text-white/40 uppercase tracking-wider mb-1">Layer Data</p>
+                {dbCategories.map(({ key, label, color }) => (
+                  <div key={key} className="flex items-center gap-2 text-xs group">
+                    <span className="w-4 h-3 rounded-sm shrink-0 border-2" style={{ borderColor: color, backgroundColor: color + "33" }} />
+                    <span className={`flex-1 leading-tight ${visibleDbCategories.has(key) ? "text-white/70" : "text-white/25"}`}>{label}</span>
+                    <button
+                      onClick={() => toggleDbCategory(key)}
+                      className={`text-xs transition-colors ${visibleDbCategories.has(key) ? "text-white/60 hover:text-white" : "text-white/20 hover:text-white/40"}`}
+                    >
+                      <i className={`bi ${visibleDbCategories.has(key) ? "bi-eye-fill" : "bi-eye-slash-fill"} text-[10px]`} />
+                    </button>
+                  </div>
+                ))}
+                <div className="pt-1 mb-1 border-t border-white/10" />
+              </>
+            )}
+            {/* ── PL Sub-Category Toggles ── */}
             <p className="text-[10px] text-white/40 uppercase tracking-wider mb-1">Penggunaan Lahan (PL)</p>
             {PL_LEGEND_ENTRIES.map(({ key, label, color }) => (
               <div key={key} className="flex items-center gap-2 text-xs group">

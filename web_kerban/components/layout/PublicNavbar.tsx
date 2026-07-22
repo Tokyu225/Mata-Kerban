@@ -8,6 +8,7 @@ import { useSession, signOut } from "next-auth/react";
 
 const NAV_ITEMS = [
   { href: "/", label: "Beranda", icon: "bi-house" },
+  { href: "/sejarah", label: "Sejarah", icon: "bi-book" },
   { href: "/map", label: "Peta", icon: "bi-map" },
   { href: "/lapor", label: "Lapor", icon: "bi-send" },
   { href: "/quiz", label: "Quiz", icon: "bi-patch-question" },
@@ -32,25 +33,28 @@ export function PublicNavbar() {
 
   return (
     <>
-      <nav className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 sm:px-8 py-3", scrolled ? "glass border-b border-border/50 shadow-sm" : "bg-transparent")}>
+      <nav className={cn("fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-3 sm:px-6 md:px-8 py-2 sm:py-3", scrolled ? "glass border-b border-border/50 shadow-sm" : "bg-transparent")}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2.5 text-foreground hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors shrink-0 mr-4 group/brand">
-            <i className="bi bi-geo-alt-fill text-xl text-emerald-600 dark:text-emerald-400 group-hover/brand:scale-110 group-hover/brand:-translate-y-0.5 transition-transform duration-300" />
-            <span className="font-display font-bold text-sm">KERBAN</span>
-          </Link>
-          <div className="hidden md:flex items-center gap-1.5">
-            {NAV_ITEMS.filter((item) => !item.auth || session).map((item) => (
-              <Link key={item.href} href={item.href} className={cn(
-                "relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95",
-                isActive(item.href)
-                  ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 ring-1 ring-emerald-500/50"
-                  : "text-foreground/60 hover:text-foreground hover:bg-muted/50 hover:shadow-md"
-              )}>
-                <i className={cn(item.icon, "mr-1.5 text-xs")} />{item.label}
-              </Link>
-            ))}
+          <div className="flex items-center gap-4">
+            <Link href="/" className="flex items-center gap-1.5 sm:gap-2.5 text-foreground hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors shrink-0 group/brand border border-emerald-600/30 dark:border-emerald-400/20 rounded-lg sm:rounded-xl px-2 py-1 sm:px-3 sm:py-1.5 hover:border-emerald-600/60 dark:hover:border-emerald-400/40">
+              <i className="bi bi-geo-alt-fill text-xl text-emerald-600 dark:text-emerald-400 group-hover/brand:scale-110 group-hover/brand:-translate-y-0.5 transition-transform duration-300" />
+              <span className="font-display font-bold text-sm">KERBAN</span>
+            </Link>
+            <div className="hidden md:flex items-center gap-1.5">
+              {NAV_ITEMS.filter((item) => !item.auth || session).map((item) => (
+                <Link key={item.href} href={item.href} className={cn(
+                  "relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95",
+                  item.href !== "/map" && "cursor-target",
+                  isActive(item.href)
+                    ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 ring-1 ring-emerald-500/50"
+                    : "text-foreground/60 hover:text-foreground hover:bg-muted/50 hover:shadow-md"
+                )}>
+                  <i className={cn(item.icon, "mr-1.5 text-xs")} />{item.label}
+                </Link>
+              ))}
+            </div>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1 sm:gap-1.5">
             <button onClick={toggleTheme} className="p-2 rounded-xl text-foreground/60 hover:text-foreground hover:bg-muted/50 hover:scale-110 active:scale-90 transition-all duration-300 group/theme" aria-label="Toggle theme">
               <i className={cn("bi text-sm transition-transform duration-500", theme === "dark" ? "bi-sun-fill group-hover/theme:rotate-90" : "bi-moon-fill group-hover/theme:-rotate-12")} />
             </button>
@@ -64,7 +68,7 @@ export function PublicNavbar() {
                 <i className="bi bi-box-arrow-right text-sm" />
               </button>
             ) : (
-              <Link href="/login" className="px-4 py-2 rounded-xl text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-500 hover:scale-105 active:scale-95 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-emerald-500/30 ring-1 ring-emerald-500/30">
+              <Link href="/login" className="px-4 py-2 rounded-xl text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-500 hover:scale-105 active:scale-95 transition-all duration-300 shadow-md hover:shadow-lg hover:shadow-emerald-500/30 ring-1 ring-emerald-500/30 cursor-target">
                 <i className="bi bi-person mr-1" /><span className="hidden sm:inline">Masuk</span>
               </Link>
             )}

@@ -70,9 +70,12 @@ class MapController extends Controller
                 "type" => "Feature",
                 "geometry" => $geometry,
                 "properties" => [
-                    "id" => $layer->id,
-                    "name" => $layer->name,
-                    "category" => $layer->category
+                    "id"           => $layer->id,
+                    "name"         => $layer->name,
+                    "category"     => $layer->category,
+                    "label_field"  => $layer->label_field,
+                    "symbology"    => $layer->symbology,
+                    "source_layer" => $layer->source_layer,
                 ]
             ];
         }
