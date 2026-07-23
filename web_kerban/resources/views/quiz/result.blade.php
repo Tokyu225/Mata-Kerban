@@ -157,16 +157,16 @@
             $percentage = ($score / $total) * 100;
             if ($percentage == 100) {
                 $scoreClass = 'score-perfect';
-                $message = 'Sempurna! Kamu benar-benar mengenal Dusun Kerban!';
+                $message = 'Sempurna! Kamu benar-benar menguasai sejarah Dusun Kerban!';
             } elseif ($percentage >= 70) {
                 $scoreClass = 'score-great';
-                $message = 'Hebat! Pengetahuanmu tentang Dusun Kerban sangat baik!';
+                $message = 'Hebat! Pengetahuanmu tentang sejarah Dusun Kerban sangat baik!';
             } elseif ($percentage >= 50) {
                 $scoreClass = 'score-good';
-                $message = 'Lumayan! Masih ada ruang untuk belajar lebih banyak!';
+                $message = 'Lumayan! Masih ada ruang untuk belajar lebih banyak tentang sejarah Kerban!';
             } else {
                 $scoreClass = 'score-try';
-                $message = 'Ayo coba lagi! Pelajari lebih lanjut tentang Dusun Kerban!';
+                $message = 'Ayo coba lagi! Pelajari lebih lanjut sejarah Dusun Kerban!';
             }
         @endphp
 

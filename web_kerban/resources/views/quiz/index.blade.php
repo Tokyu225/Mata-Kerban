@@ -212,9 +212,9 @@
 <div class="quiz-hero">
     <div class="quiz-container container">
         <div class="quiz-header">
-            <div class="badge-question mb-3">Quiz Pengetahuan</div>
-            <h1>Seberapa Kenal Kamu dengan <br>Dusun Kerban?</h1>
-            <p>Jawab 10 pertanyaan tentang dusun kita dan buktikan pengetahuanmu!</p>
+            <div class="badge-question mb-3">Quiz Sejarah</div>
+            <h1>Seberapa Kenal Kamu dengan <br>Sejarah Dusun Kerban?</h1>
+            <p>Jawab 10 pertanyaan tentang sejarah dusun dan buktikan pengetahuanmu!</p>
             <div class="progress-container">
                 <div class="progress-fill" id="progressFill"></div>
             </div>

@@ -5,43 +5,43 @@ import { cn } from "@/lib/utils";
 
 const QUESTIONS = [
   {
-    q: "Apa singkatan dari WebGIS?",
-    o: ["Web Geographic Information System", "Web General Internet Service", "Web Global Information System", "Web Geo Internet Server"],
-    a: 0,
-  },
-  {
-    q: "Apa produk unggulan utama Dusun Kerban?",
-    o: ["Elektronik", "Kerajinan Bambu & Batik", "Otomotif", "Tekstil Modern"],
+    q: "Dari mana asal nama 'Kerban' menurut versi 'Kerepan'?",
+    o: ["Nama seorang tokoh", "Kebiasaan luhur masyarakat Jawa (kerepan)", "Nama tumbuhan langka", "Singkatan dari Kerajaan Banjar"],
     a: 1,
   },
   {
-    q: "Fitur apa yang tersedia di peta interaktif Dusun Kerban?",
-    o: ["Hanya melihat peta", "Menggambar & menyimpan layer", "Bermain game", "Chat dengan warga"],
+    q: "Apa arti kata 'Kerepan' dalam Bahasa Jawa?",
+    o: ["Perang", "Kebiasaan", "Pengorbanan", "Persatuan"],
     a: 1,
   },
   {
-    q: "Siapa yang dapat mengelola layer peta?",
-    o: ["Semua pengguna", "Hanya warga", "Hanya endministrator", "Pengunjung tanpa login"],
+    q: "Siapa tokoh sejarah yang terkait dengan asal-usul nama 'Kerban' versi 'Korban'?",
+    o: ["Gajah Mada", "Pangeran Diponegoro", "Sultan Agung", "Raden Ajeng Kartini"],
+    a: 1,
+  },
+  {
+    q: "Pada tahun berapa Perang Jawa yang melibatkan Pangeran Diponegoro dimulai?",
+    o: ["1815", "1825", "1835", "1845"],
+    a: 1,
+  },
+  {
+    q: "Apa makna kepercayaan 'Ana Dewa Ngangklang Jagat' yang diyakini masyarakat Jawa?",
+    o: ["Ada Dewa yang menciptakan dunia", "Ada Dewa yang sedang berkeliling dunia saat maghrib", "Ada Dewa yang memberi hujan", "Ada Dewa pelindung desa"],
+    a: 1,
+  },
+  {
+    q: "Di desa manakah Dusun Kerban berada?",
+    o: ["Desa Sukamaju", "Desa Makmur", "Desa Sumberarum", "Desa Sidomulyo"],
     a: 2,
   },
   {
-    q: "Apa kegunaan fitur 'Lapor Warga'?",
-    o: ["Bermain game", "Melaporkan kondisi lingkungan & infrastruktur", "Chatting", "Belanja online"],
+    q: "Apa yang dilakukan pasukan Pangeran Diponegoro di wilayah Desa Sumberarum?",
+    o: ["Mendirikan keraton", "Membangun perkemahan dan menggali sumber air", "Membuka pasar tradisional", "Membangun masjid"],
     a: 1,
   },
   {
-    q: "Apa jenis basemap yang tersedia di peta?",
-    o: ["Satelit saja", "Jalan saja", "Satelit, Jalan, dan Topografi", "Hanya Topografi"],
-    a: 2,
-  },
-  {
-    q: "Apa manfaat utama WebGIS untuk Dusun Kerban?",
-    o: ["Hanya hiburan", "Transparansi informasi & pemetaan partisipatif", "Jual beli online", "Media sosial"],
-    a: 1,
-  },
-  {
-    q: "Apa nama lengkap sistem ini?",
-    o: ["Sistem Informasi Desa", "Sistem Informasi & WebGIS Dusun Kerban", "WebGIS Nasional", "Sistem Pemetaan Umum"],
+    q: "Apa simbol utama yang melekat pada Dusun Kerban berdasarkan sejarahnya?",
+    o: ["Kekayaan alam", "Kebiasaan luhur & semangat pengorbanan", "Perdagangan", "Pertanian modern"],
     a: 1,
   },
 ];
@@ -107,7 +107,7 @@ export default function QuizPage() {
             {percentage >= 80 ? "🎉 Luar Biasa!" : percentage >= 60 ? "👍 Bagus!" : percentage >= 40 ? "📚 Terus Belajar!" : "💪 Jangan Menyerah!"}
           </h1>
           <p className="text-muted-foreground mb-6">
-            Skor Anda: {score} dari {QUESTIONS.length}
+            Skor Anda: {score} dari {QUESTIONS.length} — pengetahuan sejarah Dusun Kerban
           </p>
 
           {/* Detailed Review */}
