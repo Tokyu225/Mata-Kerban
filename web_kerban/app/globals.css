@@ -195,6 +195,40 @@
   z-index: 1;
 }
 
+/* Popup — transparent wrapper so React popup shows through cleanly */
+.leaflet-popup-content-wrapper {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+}
+.leaflet-popup-content {
+  margin: 0 !important;
+  width: auto !important;
+  border: none !important;
+}
+.leaflet-popup-tip-container,
+.leaflet-popup-tip {
+  display: none !important;
+}
+.leaflet-popup-close-button {
+  display: none !important;
+}
+
+/* Hover tooltips */
+.map-tooltip {
+  background: rgba(10, 30, 18, 0.92) !important;
+  border: 1px solid rgba(52, 211, 153, 0.3) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5) !important;
+  padding: 8px 12px !important;
+  font-family: system-ui, sans-serif !important;
+}
+.map-tooltip::before {
+  border-top-color: rgba(10, 30, 18, 0.92) !important;
+}
+
 /* Scale bar offset to avoid overlapping our info bar */
 .leaflet-control-scale {
   margin-bottom: 28px !important;

@@ -1,308 +1,359 @@
 "use client";
 
-import { motion, useScroll, useSpring } from "motion/react";
 import { useRef } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
 import SejarahAudio from "@/components/SejarahAudio";
-import ShinyText from "@/components/reactbits/ShinyText";
-
-const TIMELINE_EVENTS = [
-  {
-    year: "1825",
-    title: "Perang Jawa",
-    desc: "Pasukan Pangeran Diponegoro membangun perkemahan dan menggali sumber air di wilayah Desa Sumberarum, termasuk Dusun Kerban. Wilayah ini menjadi saksi perjuangan melawan kolonial Belanda.",
-    icon: "bi-shield-fill",
-  },
-  {
-    year: "~1900-an",
-    title: "Tradisi Kerepan",
-    desc: "Masyarakat Jawa meyakini kepercayaan 'Ana Dewa Ngangklang Jagat' — ketika menjelang maghrib setiap orang berhenti beraktivitas dan istirahat, menjadi kebiasaan turun-temurun.",
-    icon: "bi-sunset-fill",
-  },
-  {
-    year: "1945",
-    title: "Era Kemerdekaan",
-    desc: "Semangat pengorbanan para pejuang terdahulu menjadi fondasi identitas Dusun Kerban sebagai simbol perjuangan dan ketahanan masyarakat.",
-    icon: "bi-flag-fill",
-  },
-  {
-    year: "Kini",
-    title: "Dusun Kerban Modern",
-    desc: "Kerban kini bertransformasi menjadi dusun yang mandiri, berbudaya, dan sejahtera — tetap memegang teguh warisan leluhur sambil menyambut era digital.",
-    icon: "bi-rocket-takeoff-fill",
-  },
-];
-
-function TimelineSection() {
-  const lineRef = useRef<HTMLDivElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: lineRef,
-    offset: ["start end", "end end"],
-  });
-
-  const scaleY = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001,
-  });
-
-  return (
-    <section className="py-20 px-4 bg-muted/30 overflow-hidden">
-      <div className="container mx-auto max-w-4xl">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="text-center mb-14"
-        >
-          <span className="inline-block bg-gradient-to-r from-emerald-600 to-emerald-500 text-white text-xs font-semibold tracking-widest uppercase px-5 py-1.5 rounded-full mb-5">
-            Linimasa
-          </span>
-          <h2 className="text-3xl md:text-4xl font-bold text-emerald-950 dark:text-emerald-50">
-            Perjalanan Sejarah
-          </h2>
-          <p className="text-muted-foreground mt-2">Jejak penting dalam perjalanan Dusun Kerban dari masa ke masa</p>
-        </motion.div>
-
-        <div ref={lineRef} className="relative">
-          {/* Vertical line with scroll-driven grow animation */}
-          <div className="absolute left-6 md:left-1/2 top-0 bottom-0 w-0.5 md:-translate-x-px">
-            <div className="absolute inset-0 bg-gradient-to-b from-amber-400/20 via-amber-500/20 to-emerald-500/20" />
-            <motion.div
-              style={{ scaleY, transformOrigin: "top" }}
-              className="absolute inset-0 bg-gradient-to-b from-amber-400 via-amber-500 to-emerald-500 origin-top"
-            />
-          </div>
-
-          <div className="space-y-10">
-            {TIMELINE_EVENTS.map((event, idx) => (
-              <motion.div
-                key={event.year}
-                initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true, margin: "-60px" }}
-                transition={{
-                  duration: 0.6,
-                  delay: idx * 0.15,
-                  ease: [0.25, 0.46, 0.45, 0.94],
-                }}
-                className={`relative flex items-start gap-6 md:gap-0 ${
-                  idx % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
-                }`}
-              >
-                {/* Dot */}
-                <motion.div
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 20,
-                    delay: idx * 0.15 + 0.3,
-                  }}
-                  className="absolute left-6 md:left-1/2 w-4 h-4 rounded-full bg-amber-500 border-4 border-background dark:border-card shadow-md z-10 -translate-x-1/2 mt-1.5"
-                />
-
-                {/* Content */}
-                <div className={`ml-14 md:ml-0 md:w-1/2 ${idx % 2 === 0 ? "md:pr-12 md:text-right" : "md:pl-12"}`}>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-60px" }}
-                    transition={{
-                      duration: 0.5,
-                      delay: idx * 0.15 + 0.15,
-                      ease: "easeOut",
-                    }}
-                    whileHover={{ scale: 1.03, boxShadow: "0 10px 40px rgba(245, 158, 11, 0.15)" }}
-                    className="glass-card p-6 transition-all duration-300"
-                  >
-                    <span className="inline-block bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full mb-3">
-                      {event.year}
-                    </span>
-                    <h3 className="font-bold text-lg text-emerald-950 dark:text-emerald-50 mb-2">
-                      <i className={`bi ${event.icon} mr-2 text-amber-500`} />
-                      {event.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{event.desc}</p>
-                  </motion.div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
+import { TIMELINE_EVENTS } from "@/components/TimelineSection";
 
 export default function SejarahPage() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress: heroProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const heroOpacity = useTransform(heroProgress, [0, 0.6], [1, 0]);
+  const heroScale = useTransform(heroProgress, [0, 0.6], [1, 1.08]);
+
   return (
-    <div className="animate-fade-in">
-      {/* Hero Section */}
-      <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <div className="w-full h-full bg-gradient-to-br from-amber-950 via-stone-950 to-emerald-950" />
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/40" />
-          <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05]" style={{
-            backgroundImage: "radial-gradient(circle, rgb(var(--foreground)) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }} />
+    <div className="bg-[#f2f7f2] dark:bg-[#121a14]">
+      {/* ═══════════════════════════════════════════════
+          HERO — Manuscript / Parchment Style
+          ═══════════════════════════════════════════════ */}
+      <div ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Background: warm parchment gradient, NO dot pattern */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#e8f0e8] via-[#d4e4d4] to-[#f2f7f2] dark:from-[#0e1a12] dark:via-[#162a1c] dark:to-[#121a14]" />
+
+        {/* Ornamental corner decorations */}
+        <div className="absolute top-12 left-12 text-emerald-300/25 dark:text-emerald-700/20 text-8xl font-serif select-none">
+          ❧
+        </div>
+        <div className="absolute top-12 right-12 text-emerald-300/25 dark:text-emerald-700/20 text-8xl font-serif select-none rotate-90">
+          ❧
+        </div>
+        <div className="absolute bottom-12 left-12 text-emerald-300/25 dark:text-emerald-700/20 text-8xl font-serif select-none -rotate-90">
+          ❧
+        </div>
+        <div className="absolute bottom-12 right-12 text-emerald-300/25 dark:text-emerald-700/20 text-8xl font-serif select-none rotate-180">
+          ❧
         </div>
 
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto pt-16">
-          <span className="inline-block bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold tracking-widest uppercase px-5 py-1.5 rounded-full mb-5">
-            Warisan Leluhur
-          </span>
-          <h1 className="text-4xl sm:text-5xl md:text-7xl font-display font-bold mb-6 leading-tight">
-            <ShinyText text="Sejarah" speed={3} color="#f59e0b" shineColor="#fef3c7" spread={100} />
+        {/* Ornamental border lines */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-emerald-400/30 to-transparent" />
+
+        {/* Decorative side lines */}
+        <div className="absolute left-8 md:left-16 top-24 bottom-24 w-px bg-gradient-to-b from-transparent via-emerald-300/20 to-transparent" />
+        <div className="absolute right-8 md:right-16 top-24 bottom-24 w-px bg-gradient-to-b from-transparent via-emerald-300/20 to-transparent" />
+
+        <motion.div
+          style={{ opacity: heroOpacity, scale: heroScale }}
+          className="relative z-10 text-center px-6 max-w-3xl mx-auto"
+        >
+          {/* Chapter indicator */}
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="flex items-center justify-center gap-4 mb-8"
+          >
+            <div className="h-px w-12 bg-emerald-400/60" />
+            <span className="text-xs tracking-[0.3em] uppercase text-emerald-600/70 dark:text-emerald-400/60 font-medium">
+              Bab Satu
+            </span>
+            <div className="h-px w-12 bg-emerald-400/60" />
+          </motion.div>
+
+          {/* Main title — serif, elegant */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="font-serif text-5xl md:text-7xl lg:text-8xl font-bold text-[#1a3d2a] dark:text-[#c8e8d0] leading-tight mb-6"
+          >
+            Sejarah
             <br />
-            <span className="text-foreground">Dusun Kerban</span>
-          </h1>
-          <p className="text-lg sm:text-xl text-foreground/70 max-w-2xl mx-auto leading-relaxed">
-            Menelusuri jejak sejarah dan warisan budaya yang membentuk identitas Dusun Kerban — dari legenda hingga masa kini.
-          </p>
+            <span className="text-emerald-600 dark:text-emerald-400">Dusun Kerban</span>
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.7 }}
+            className="text-[#4a6b52] dark:text-[#7a9e82] text-lg md:text-xl leading-relaxed italic"
+          >
+            Menelusuri jejak leluhur — dari legenda Kerepan hingga semangat pengorbanan
+            yang membentuk identitas Dusun Kerban.
+          </motion.p>
+
+          {/* Scroll indicator — distinct from landing page */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.3 }}
+            className="mt-14 flex flex-col items-center gap-2"
+          >
+            <span className="text-[10px] tracking-[0.25em] uppercase text-emerald-500/50">Gulir ke Bawah</span>
+            <motion.div
+              animate={{ y: [0, 6, 0] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              className="w-5 h-8 rounded-full border border-emerald-400/30 flex items-start justify-center p-1"
+            >
+              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500/50" />
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* ═══════════════════════════════════════════════
+          ASAL-USUL — Side-by-side with ornamental divider
+          ═══════════════════════════════════════════════ */}
+      <section className="py-24 px-4 relative">
+        {/* Decorative top ornament */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 flex items-center gap-2">
+          <div className="h-px w-16 bg-emerald-300/30" />
+          <span className="text-emerald-400/40 text-lg">◆</span>
+          <div className="h-px w-16 bg-emerald-300/30" />
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-          <i className="bi bi-chevron-down text-2xl text-foreground/30" />
-        </div>
-      </section>
-
-      {/* Audio Section */}
-      <section className="py-16 px-4 bg-gradient-to-b from-muted/30 to-background">
-        <div className="container mx-auto max-w-3xl">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 text-sm font-medium px-4 py-2 rounded-full mb-4">
-              <i className="bi bi-mic-fill" /> Dengarkan Langsung
-            </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-emerald-950 dark:text-emerald-50">
-              Rekaman Narasi Sejarah
-            </h2>
-            <p className="text-muted-foreground mt-2">
-              Rekaman suara asli yang menuturkan sejarah Dusun Kerban — Suara 133
-            </p>
-          </div>
-          <div className="glass-card p-6 md:p-8">
-            <SejarahAudio />
-          </div>
-        </div>
-      </section>
-
-      {/* Asal-Usul Nama */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-12">
-            <span className="inline-block bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold tracking-widest uppercase px-5 py-1.5 rounded-full mb-5">
+        <div className="container mx-auto max-w-6xl">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <span className="text-xs tracking-[0.3em] uppercase text-emerald-600/60 dark:text-emerald-400/50 font-medium">
               Asal-Usul
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950 dark:text-emerald-50">
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-[#1a3d2a] dark:text-[#c8e8d0] mt-3 mb-4">
               Dua Versi Cerita
             </h2>
-            <p className="text-muted-foreground mt-2 max-w-xl mx-auto">
-              Nama &quot;Kerban&quot; memiliki dua versi asal-usul yang sama-sama diyakini dan dihormati oleh masyarakat setempat
+            <p className="text-[#4a6b52] dark:text-[#7a9e82] max-w-xl mx-auto leading-relaxed">
+              Nama &ldquo;Kerban&rdquo; memiliki dua versi asal-usul yang sama-sama diyakini dan dihormati oleh masyarakat setempat
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Story 1: Kerepan */}
-            <div className="group glass-card overflow-hidden hover:shadow-2xl hover:shadow-amber-900/5 transition-all duration-500">
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-orange-400" />
-              <div className="p-8">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                    <i className="bi bi-sunset-fill text-amber-600 dark:text-amber-400 text-xl" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-xl text-emerald-950 dark:text-emerald-50">Versi &quot;Kerepan&quot;</h3>
-                    <p className="text-xs text-muted-foreground">Kebiasaan Luhur</p>
-                  </div>
-                </div>
-                <div className="space-y-4 text-muted-foreground leading-relaxed">
-                  <p>
-                    Kerban memiliki sejarah historis yang diyakini masyarakat sebagai sebuah nama dusun yang merefleksikan kebiasaan tradisi masyarakat Jawa. Orang Jawa meyakini kepercayaan terdahulu yakni <em>&ldquo;Ana Dewa Ngangklang Jagat&rdquo;</em> (Ada Dewa yang sedang berkeliling Dunia), yang mana ketika menjelang maghrib diharuskan setiap orang berhenti beraktivitas dan istirahat.
-                  </p>
-                  <p>
-                    Hal ini terus dilakukan sehingga menjadi suatu kebiasaan atau dalam Bahasa Jawa disebut <strong>&ldquo;Kerepan&rdquo;</strong>. <strong>Kerban</strong> sendiri merupakan simplifikasi dari kata <em>kerepan</em> yang berarti kebiasaan luhur yang dilakukan oleh orang Jawa terdahulu hingga sekarang.
-                  </p>
-                  <div className="bg-amber-50 dark:bg-amber-950/20 rounded-xl p-4 mt-4">
-                    <div className="flex items-start gap-3">
-                      <i className="bi bi-lightbulb-fill text-amber-500 text-lg mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-amber-800 dark:text-amber-200 mb-1">Makna Filosofis</p>
-                        <p className="text-sm text-amber-700/80 dark:text-amber-300/70">
-                          Kerepan mengajarkan keseimbangan hidup: bekerja di siang hari, beristirahat saat senja — harmoni antara manusia, alam, dan Sang Pencipta.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <div className="relative">
+            {/* Central ornamental divider (visible on desktop) */}
+            <div className="hidden md:block absolute left-1/2 top-0 bottom-0 -translate-x-1/2">
+              <div className="h-full w-px bg-gradient-to-b from-transparent via-emerald-300/40 to-transparent" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full border border-emerald-300/30 bg-[#f2f7f2] dark:bg-[#121a14] flex items-center justify-center">
+                <span className="text-emerald-400/60 text-sm">atau</span>
               </div>
             </div>
 
-            {/* Story 2: Korban */}
-            <div className="group glass-card overflow-hidden hover:shadow-2xl hover:shadow-red-900/5 transition-all duration-500">
-              <div className="h-2 bg-gradient-to-r from-red-500 to-rose-400" />
-              <div className="p-8">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-12 h-12 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                    <i className="bi bi-shield-fill text-red-600 dark:text-red-400 text-xl" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
+              {/* Story 1: Kerepan */}
+              <motion.div
+                initial={{ opacity: 0, x: -40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="group"
+              >
+                <div className="bg-white dark:bg-[#1a221c] border border-emerald-200/50 dark:border-emerald-800/20 rounded-2xl p-8 md:p-10 shadow-lg shadow-emerald-900/5 hover:shadow-xl hover:shadow-emerald-900/10 transition-all duration-500">
+                  {/* Icon */}
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-emerald-100 to-green-100 dark:from-emerald-900/20 dark:to-green-900/20 flex items-center justify-center mb-6">
+                    <i className="bi bi-sunset-fill text-emerald-600 dark:text-emerald-400 text-2xl" />
                   </div>
-                  <div>
-                    <h3 className="font-bold text-xl text-emerald-950 dark:text-emerald-50">Versi &quot;Korban&quot;</h3>
-                    <p className="text-xs text-muted-foreground">Simbol Pengorbanan</p>
+
+                  <h3 className="font-serif text-2xl font-bold text-[#1a3d2a] dark:text-[#c8e8d0] mb-2">
+                    &ldquo;Kerepan&rdquo;
+                  </h3>
+                  <p className="text-xs tracking-widest uppercase text-emerald-500/70 mb-6">Kebiasaan Luhur</p>
+
+                  <div className="space-y-5 text-[#4a634a] dark:text-[#9ab89e] leading-relaxed">
+                    <p>
+                      Kerban memiliki sejarah historis yang diyakini masyarakat sebagai sebuah nama dusun yang merefleksikan kebiasaan tradisi masyarakat Jawa. Orang Jawa meyakini kepercayaan terdahulu yakni <em className="text-emerald-700 dark:text-emerald-300 not-italic font-medium">&ldquo;Ana Dewa Ngangklang Jagat&rdquo;</em> (Ada Dewa yang sedang berkeliling Dunia), yang mana ketika menjelang maghrib diharuskan setiap orang berhenti beraktivitas dan istirahat.
+                    </p>
+                    <p>
+                      Hal ini terus dilakukan sehingga menjadi suatu kebiasaan atau dalam Bahasa Jawa disebut <strong className="text-[#1a3d2a] dark:text-[#c8e8d0]">&ldquo;Kerepan&rdquo;</strong>. <strong className="text-[#1a3d2a] dark:text-[#c8e8d0]">Kerban</strong> sendiri merupakan simplifikasi dari kata <em>kerepan</em> yang berarti kebiasaan luhur yang dilakukan oleh orang Jawa terdahulu hingga sekarang.
+                    </p>
+                  </div>
+
+                  {/* Quote box */}
+                  <div className="mt-6 border-l-[3px] border-emerald-400/60 pl-5 py-1">
+                    <p className="text-sm text-emerald-700/80 dark:text-emerald-300/70 italic leading-relaxed">
+                      &ldquo;Keseimbangan hidup: bekerja di siang hari, beristirahat saat senja — harmoni antara manusia, alam, dan Sang Pencipta.&rdquo;
+                    </p>
                   </div>
                 </div>
-                <div className="space-y-4 text-muted-foreground leading-relaxed">
-                  <p>
-                    Dalam versi sejarah yang lain, istilah Dusun Kerban juga dikaitkan dengan makna <strong>&ldquo;Korban&rdquo;</strong> atau <strong>&ldquo;Pengorbanan&rdquo;</strong> yang berkaitan dengan cerita perjuangan <strong>Pangeran Diponegoro</strong>.
-                  </p>
-                  <p>
-                    Menurut penuturan lokal, pada awal <strong>Perang Jawa tahun 1825</strong>, pasukan Pangeran Diponegoro pernah membangun perkemahan dan menggali sumber air di wilayah Desa Sumberarum (salah satunya di Kerban). Banyaknya korban pada saat perlawanan terhadap kolonial Belanda menjadikan dusun Kerban sangat identik dengan simbol pengorbanan para pejuang terdahulu.
-                  </p>
-                  <div className="bg-red-50 dark:bg-red-950/20 rounded-xl p-4 mt-4">
-                    <div className="flex items-start gap-3">
-                      <i className="bi bi-lightbulb-fill text-red-500 text-lg mt-0.5" />
-                      <div>
-                        <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-1">Makna Historis</p>
-                        <p className="text-sm text-red-700/80 dark:text-red-300/70">
-                          Pengorbanan para pejuang menjadi fondasi identitas Kerban — mengingatkan generasi penerus akan harga sebuah kemerdekaan dan keberanian.
-                        </p>
-                      </div>
-                    </div>
+              </motion.div>
+
+              {/* Story 2: Korban */}
+              <motion.div
+                initial={{ opacity: 0, x: 40 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="group"
+              >
+                <div className="bg-white dark:bg-[#1a221c] border border-teal-200/50 dark:border-teal-800/20 rounded-2xl p-8 md:p-10 shadow-lg shadow-teal-900/5 hover:shadow-xl hover:shadow-teal-900/10 transition-all duration-500">
+                  {/* Icon */}
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-100 to-cyan-100 dark:from-teal-900/20 dark:to-cyan-900/20 flex items-center justify-center mb-6">
+                    <i className="bi bi-shield-fill text-teal-600 dark:text-teal-400 text-2xl" />
+                  </div>
+
+                  <h3 className="font-serif text-2xl font-bold text-[#1a3d2a] dark:text-[#c8e8d0] mb-2">
+                    &ldquo;Korban&rdquo;
+                  </h3>
+                  <p className="text-xs tracking-widest uppercase text-teal-500/70 mb-6">Simbol Pengorbanan</p>
+
+                  <div className="space-y-5 text-[#4a634a] dark:text-[#9ab89e] leading-relaxed">
+                    <p>
+                      Dalam versi sejarah yang lain, istilah Dusun Kerban juga dikaitkan dengan makna <strong className="text-[#1a3d2a] dark:text-[#c8e8d0]">&ldquo;Korban&rdquo;</strong> atau <strong className="text-[#1a3d2a] dark:text-[#c8e8d0]">&ldquo;Pengorbanan&rdquo;</strong> yang berkaitan dengan cerita perjuangan <strong className="text-[#1a3d2a] dark:text-[#c8e8d0]">Pangeran Diponegoro</strong>.
+                    </p>
+                    <p>
+                      Menurut penuturan lokal, pada awal <strong className="text-[#1a3d2a] dark:text-[#c8e8d0]">Perang Jawa tahun 1825</strong>, pasukan Pangeran Diponegoro pernah membangun perkemahan dan menggali sumber air di wilayah Desa Sumberarum (salah satunya di Kerban). Banyaknya korban pada saat perlawanan terhadap kolonial Belanda menjadikan dusun Kerban sangat identik dengan simbol pengorbanan para pejuang terdahulu.
+                    </p>
+                  </div>
+
+                  {/* Quote box */}
+                  <div className="mt-6 border-l-[3px] border-teal-400/60 pl-5 py-1">
+                    <p className="text-sm text-teal-700/80 dark:text-teal-300/70 italic leading-relaxed">
+                      &ldquo;Pengorbanan para pejuang menjadi fondasi identitas Kerban — mengingatkan generasi penerus akan harga sebuah kemerdekaan.&rdquo;
+                    </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Timeline */}
-      <TimelineSection />
-
-      {/* CTA */}
-      <section className="py-16 px-4 bg-gradient-to-br from-amber-50 via-white to-emerald-50 dark:from-amber-950/20 dark:via-background dark:to-emerald-950/20">
-        <div className="container mx-auto max-w-3xl text-center">
-          <div className="glass-card p-10 md:p-14">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center mx-auto mb-6">
-              <i className="bi bi-geo-alt-fill text-2xl text-white" />
+      {/* ═══════════════════════════════════════════════
+          AUDIO — Integrated narrative player
+          ═══════════════════════════════════════════════ */}
+      <section className="py-20 px-4 bg-gradient-to-b from-transparent via-[#e8f2e8]/50 to-transparent dark:via-[#121a14]/50">
+        <div className="container mx-auto max-w-2xl">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.8 }}
+            className="bg-white dark:bg-[#1a221c] border border-emerald-200/40 dark:border-emerald-800/20 rounded-3xl p-8 md:p-10 shadow-xl shadow-emerald-900/5"
+          >
+            {/* Header with decorative line */}
+            <div className="flex items-center gap-4 mb-6">
+              <div className="h-px flex-1 bg-gradient-to-r from-transparent to-emerald-300/30" />
+              <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+                <i className="bi bi-mic-fill text-emerald-600 dark:text-emerald-400" />
+              </div>
+              <div className="h-px flex-1 bg-gradient-to-l from-transparent to-emerald-300/30" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-emerald-950 dark:text-emerald-50 mb-4">
-              Jelajahi Lebih Lanjut
-            </h2>
-            <p className="text-muted-foreground mb-8 max-w-lg mx-auto">
-              Lihat peta interaktif Dusun Kerban dan temukan lokasi bersejarah, fasilitas umum, serta informasi spasial lainnya.
+
+            <h3 className="font-serif text-xl font-bold text-[#1a3d2a] dark:text-[#c8e8d0] text-center mb-1">
+              Rekaman Narasi Sejarah
+            </h3>
+            <p className="text-xs text-center text-[#4a6b52] dark:text-[#7a9e82] mb-8">
+              Tuturan asli sejarah Dusun Kerban — Suara 133
             </p>
-            <a
-              href="/map"
-              className="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold px-8 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/30 hover:shadow-xl hover:shadow-amber-500/40"
-            >
-              <i className="bi bi-map-fill" /> Buka Peta Interaktif
-            </a>
+
+            <SejarahAudio />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════
+          TIMELINE — restyled with sepia tones
+          ═══════════════════════════════════════════════ */}
+      <section className="py-24 px-4 relative">
+        <div className="container mx-auto max-w-4xl">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <span className="text-xs tracking-[0.3em] uppercase text-emerald-600/60 dark:text-emerald-400/50 font-medium">
+              Linimasa
+            </span>
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-[#1a3d2a] dark:text-[#c8e8d0] mt-3 mb-3">
+              Perjalanan Sejarah
+            </h2>
+            <p className="text-[#4a6b52] dark:text-[#7a9e82]">
+              Jejak penting Dusun Kerban dari masa ke masa
+            </p>
+          </motion.div>
+
+          <div className="relative">
+            {/* Center line */}
+            <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px md:-translate-x-px bg-gradient-to-b from-emerald-300/20 via-emerald-400/30 to-emerald-300/20" />
+
+            <div className="space-y-12">
+              {TIMELINE_EVENTS.map((event, idx) => (
+                <motion.div
+                  key={event.year}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-60px" }}
+                  transition={{ duration: 0.7, delay: idx * 0.12, ease: "easeOut" }}
+                  className={`relative flex items-start gap-6 md:gap-0 ${
+                    idx % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
+                  }`}
+                >
+                  {/* Dot on timeline */}
+                  <div className="absolute left-4 md:left-1/2 w-3 h-3 rounded-full bg-emerald-500 border-[3px] border-[#f2f7f2] dark:border-[#121a14] -translate-x-1/2 mt-2 z-10 shadow-sm" />
+
+                  {/* Content card */}
+                  <div className={`ml-12 md:ml-0 md:w-[calc(50%-2rem)] ${idx % 2 === 0 ? "md:pr-8 md:text-right" : "md:pl-8"}`}>
+                    <div className="bg-white dark:bg-[#1a221c] border border-emerald-200/30 dark:border-emerald-800/20 rounded-xl p-6 hover:shadow-lg hover:shadow-emerald-900/5 transition-shadow duration-300">
+                      <span className="inline-block font-mono text-xs font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1 rounded-md mb-3 tracking-wider">
+                        {event.year}
+                      </span>
+                      <h3 className="font-serif font-bold text-lg text-[#1a3d2a] dark:text-[#c8e8d0] mb-2 flex items-center gap-2">
+                        <i className={`bi ${event.icon} text-emerald-500 text-sm`} />
+                        {event.title}
+                      </h3>
+                      <p className="text-sm text-[#4a634a] dark:text-[#9ab89e] leading-relaxed">
+                        {event.desc}
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════
+          FOOTER — Simple, distinct from landing page CTA
+          ═══════════════════════════════════════════════ */}
+      <section className="py-20 px-4 border-t border-emerald-200/30 dark:border-emerald-800/20">
+        <div className="container mx-auto max-w-2xl text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.8 }}
+          >
+            {/* Closing ornament */}
+            <div className="text-emerald-400/30 text-6xl font-serif mb-6 select-none">❧</div>
+
+            <p className="font-serif italic text-[#4a6b52] dark:text-[#7a9e82] text-lg leading-relaxed mb-8">
+              &ldquo;Sejarah bukan sekadar cerita masa lalu — ia adalah kompas yang menuntun langkah
+              generasi penerus Dusun Kerban.&rdquo;
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <a
+                href="/map"
+                className="inline-flex items-center gap-2 border border-emerald-400/40 dark:border-emerald-600/30 text-[#1a3d2a] dark:text-[#c8e8d0] hover:bg-emerald-50 dark:hover:bg-emerald-900/10 font-medium px-6 py-3 rounded-xl transition-all duration-300"
+              >
+                <i className="bi bi-map-fill" /> Jelajahi Peta
+              </a>
+              <a
+                href="/"
+                className="inline-flex items-center gap-2 text-[#4a6b52] dark:text-[#7a9e82] hover:text-[#1a3d2a] dark:hover:text-[#c8e8d0] font-medium px-6 py-3 rounded-xl transition-all duration-300"
+              >
+                <i className="bi bi-arrow-left" /> Kembali ke Beranda
+              </a>
+            </div>
+          </motion.div>
         </div>
       </section>
     </div>

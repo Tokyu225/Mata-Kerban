@@ -9,7 +9,8 @@ import { useSession, signOut } from "next-auth/react";
 const NAV_ITEMS = [
   { href: "/", label: "Beranda", icon: "bi-house" },
   { href: "/sejarah", label: "Sejarah", icon: "bi-book" },
-  { href: "/map", label: "Peta", icon: "bi-map" },
+  { href: "/map", label: "Peta Interaktif", icon: "bi-map" },
+  { href: "/peta", label: "Peta", icon: "bi-map" },
   { href: "/lapor", label: "Lapor", icon: "bi-send" },
   { href: "/quiz", label: "Quiz", icon: "bi-patch-question" },
   { href: "/dashboard", label: "Dashboard", icon: "bi-speedometer2", auth: true },
@@ -44,7 +45,7 @@ export function PublicNavbar() {
               {NAV_ITEMS.filter((item) => !item.auth || session).map((item) => (
                 <Link key={item.href} href={item.href} className={cn(
                   "relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-105 active:scale-95",
-                  item.href !== "/map" && "cursor-target",
+                  "cursor-target",
                   isActive(item.href)
                     ? "bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 ring-1 ring-emerald-500/50"
                     : "text-foreground/60 hover:text-foreground hover:bg-muted/50 hover:shadow-md"

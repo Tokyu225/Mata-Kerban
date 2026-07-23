@@ -1,0 +1,29 @@
+{
+"type": "FeatureCollection",
+"name": "Sarana_Prasarana",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"xy_coordinate_resolution": 8.98315e-10,
+"z_coordinate_resolution": 0.0001,
+"features": [
+{ "type": "Feature", "properties": { "Sub_Unsur": "2", "Kelas": "25", "TOPONIM": "Griya Raudlah" }, "geometry": { "type": "Point", "coordinates": [ 110.1750122913, -7.5678265505, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "4", "Kelas": "39", "TOPONIM": "Masjid Al Barokah" }, "geometry": { "type": "Point", "coordinates": [ 110.1763767087, -7.5697920311, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "9", "Kelas": "1", "TOPONIM": "Adipo Genjes" }, "geometry": { "type": "Point", "coordinates": [ 110.1773577448, -7.5699855022, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "9", "Kelas": "1", "TOPONIM": "PT. SMU" }, "geometry": { "type": "Point", "coordinates": [ 110.1716031764, -7.5653251592, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "2", "Kelas": "23", "TOPONIM": "SDIT Al-Madinah 1 Tempuran" }, "geometry": { "type": "Point", "coordinates": [ 110.1712300494, -7.5663141189, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "2", "Kelas": "24", "TOPONIM": "TKIT Al-Madinah 1 Tempuran" }, "geometry": { "type": "Point", "coordinates": [ 110.1713453083, -7.5660890768, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "2", "Kelas": "22", "TOPONIM": "SMPIT Al-Madinah 1 Tempuran" }, "geometry": { "type": "Point", "coordinates": [ 110.1710830725, -7.5667487361, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "5", "Kelas": "33", "TOPONIM": "Makam Kyai Abdul Karim" }, "geometry": { "type": "Point", "coordinates": [ 110.1780194908, -7.5711126488, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "9", "Kelas": "3", "TOPONIM": "Cahaya Gemilang Advertising" }, "geometry": { "type": "Point", "coordinates": [ 110.1760804218, -7.5691253728, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "9", "Kelas": "3", "TOPONIM": "Pijat Mbah Dasman" }, "geometry": { "type": "Point", "coordinates": [ 110.1757356988, -7.5687346403, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "9", "Kelas": "3", "TOPONIM": "Sushi Kitchen" }, "geometry": { "type": "Point", "coordinates": [ 110.1771337385, -7.5681929809, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "2", "Kelas": "25", "TOPONIM": "TPA Kyai Sulthon" }, "geometry": { "type": "Point", "coordinates": [ 110.175334852, -7.5675787564, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "9", "Kelas": "1", "TOPONIM": "Warid Es Kristal" }, "geometry": { "type": "Point", "coordinates": [ 110.1723534401, -7.5647456321, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "7", "Kelas": "3", "TOPONIM": "Mie Ayam dan Bakso Mbok'e" }, "geometry": { "type": "Point", "coordinates": [ 110.1713026493, -7.5643588031, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "7", "Kelas": "3", "TOPONIM": "ABshop" }, "geometry": { "type": "Point", "coordinates": [ 110.1754819972, -7.5689466316, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "7", "Kelas": "3", "TOPONIM": "Toko Azka dan Zaka" }, "geometry": { "type": "Point", "coordinates": [ 110.1756858441, -7.5690726724, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "7", "Kelas": "3", "TOPONIM": "Milla Snack" }, "geometry": { "type": "Point", "coordinates": [ 110.1756281966, -7.5692747216, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "7", "Kelas": "3", "TOPONIM": "Warung Mba Puji" }, "geometry": { "type": "Point", "coordinates": [ 110.1771160994, -7.5693461825, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "7", "Kelas": "3", "TOPONIM": "Ahmad Nizar Bakul Kandang" }, "geometry": { "type": "Point", "coordinates": [ 110.1768715242, -7.570160583, 0.0 ] } },
+{ "type": "Feature", "properties": { "Sub_Unsur": "2", "Kelas": "27", "TOPONIM": "Perpustakaan Raudlah" }, "geometry": { "type": "Point", "coordinates": [ 110.1749088823, -7.5677713234, 0.0 ] } }
+]
+}

@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import Link from "next/link";
-import ShinyText from "@/components/reactbits/ShinyText";
+import ScrollFloat from "@/components/reactbits/ScrollFloat";
 import GradientText from "@/components/reactbits/GradientText";
 import SejarahAudio from "@/components/SejarahAudio";
+import TimelineSection from "@/components/TimelineSection";
 import KerbanDalamAngka from "@/components/KerbanDalamAngka";
+import BounceCards from "@/components/reactbits/BounceCards";
 
 const MENU_ITEMS = [
   { href: "/sejarah", icon: "bi-book-fill", title: "Sejarah", desc: "Warisan & asal-usul Kerban", color: "from-amber-400 to-orange-500" },
@@ -15,12 +17,23 @@ const MENU_ITEMS = [
   { href: "/dashboard", icon: "bi-speedometer2", title: "Dashboard", desc: "Kelola data dan laporan", color: "from-emerald-500 to-green-600" },
 ];
 
-const PRODUK_UNGGULAN = [
-  { name: "Kerajinan Bambu", icon: "bi-tree", desc: "Produk kerajinan tangan khas" },
-  { name: "Batik Kerban", icon: "bi-brush", desc: "Motif batik khas dusun" },
-  { name: "Hasil Tani", icon: "bi-flower1", desc: "Produk pertanian unggulan" },
-  { name: "Kuliner Khas", icon: "bi-cup-hot", desc: "Makanan tradisional" },
-];
+interface UmkmItem {
+  name: string;
+  icon: string;
+  desc: string;
+  category: string;
+}
+
+function inferUmkmIcon(name: string): string {
+  const lower = name.toLowerCase();
+  if (/pijat|spa|salon/i.test(lower)) return "bi-heart-pulse";
+  if (/sushi|mie|bakso|warung|snack|kitchen|makan|kuliner|es\s|kristal/i.test(lower)) return "bi-cup-hot";
+  if (/advertising|cahaya|gemilang|percetakan|sablon/i.test(lower)) return "bi-printer";
+  if (/shop|toko|abshop/i.test(lower)) return "bi-shop";
+  if (/pt\.|pabrik|industri|pabrik/i.test(lower)) return "bi-building";
+  if (/kandang|ternak|bakul/i.test(lower)) return "bi-basket";
+  return "bi-shop-window";
+}
 
 const TEAM_MEMBERS = [
   { src: "/images/aboutus.jpeg", name: "Tim Kerban", role: "Bersama" },
@@ -30,10 +43,64 @@ const TEAM_MEMBERS = [
   { src: "/images/shawal.jpeg", name: "Anissa Syawalini Putri A.", role: "Anggota" },
 ];
 
+const PETA_CARDS = [
+  { img: "/peta/img/A3_ADMIN_1/A3_ADMIN_1-1.png" },
+  { img: "/peta/img/A3_SARPRAS_1/A3_SARPRAS_1-1.png" },
+  { img: "/peta/img/A3_PERSIL_1/A3_PERSIL_1-1.png" },
+  { img: "/peta/img/PL%20A3%20FIXX/PL%20A3%20FIXX-1.png" },
+  { img: "/peta/img/Kepadatan%20Hunian_1/Kepadatan%20Hunian_1-1.png" },
+];
+
 export default function HomePage() {
   const [showVideo, setShowVideo] = useState(true);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [umkmList, setUmkmList] = useState<UmkmItem[]>([]);
   const slideContainerRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Fetch UMKM data from sarpras GeoJSON (Kelas 1 = Industri, Kelas 3 = Perdagangan/Jasa)
+  useEffect(() => {
+    fetch("/data/sarpras.geojson")
+      .then((r) => r.json())
+      .then((data) => {
+        const features = data.features || [];
+        const umkm: UmkmItem[] = [];
+        for (const f of features) {
+          const kelas = f.properties?.Kelas;
+          if (kelas === "1" || kelas === "3") {
+            const name = f.properties?.TOPONIM || "Tanpa Nama";
+            umkm.push({
+              name,
+              icon: inferUmkmIcon(name),
+              desc: kelas === "1" ? "Industri / Pabrik" : "Perdagangan / Jasa",
+              category: kelas,
+            });
+          }
+        }
+        setUmkmList(umkm);
+      })
+      .catch(() => {
+        // Fallback if GeoJSON not available
+        setUmkmList([]);
+      });
+  }, []);
+
+  // Ensure video autoplays silently (browser fallback)
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = true;
+    video.play().catch(() => {
+      // Browser blocked autoplay; will retry on first user interaction
+      const playOnInteraction = () => {
+        video.play().catch(() => {});
+        document.removeEventListener("click", playOnInteraction);
+        document.removeEventListener("touchstart", playOnInteraction);
+      };
+      document.addEventListener("click", playOnInteraction, { once: true });
+      document.addEventListener("touchstart", playOnInteraction, { once: true });
+    });
+  }, [showVideo]);
 
   // Clamp to safe bounds
   const safeSlide = Math.max(0, Math.min(activeSlide, TEAM_MEMBERS.length - 1));
@@ -58,7 +125,7 @@ export default function HomePage() {
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           {showVideo ? (
-            <video autoPlay muted loop playsInline className="w-full h-full object-cover" poster="/videos/placeholder.mp4">
+            <video ref={videoRef} autoPlay muted loop playsInline className="w-full h-full object-cover" poster="/videos/placeholder.mp4">
               <source src="/videos/dji-trim.mp4" type="video/mp4" />
             </video>
           ) : (
@@ -73,8 +140,14 @@ export default function HomePage() {
 
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto pt-20">
 
-          <h1 className="text-5xl sm:text-6xl md:text-8xl font-display font-bold mb-6 leading-tight">
-            <ShinyText text="Kerban" speed={3} color="#4ade80" shineColor="#bbf7d0" spread={100} />
+          <h1 className="mb-6 leading-tight">
+            <ScrollFloat
+              textClassName="text-5xl sm:text-6xl md:text-8xl font-display font-bold text-emerald-600 dark:text-emerald-400"
+              animationDuration={0.8}
+              stagger={0.02}
+            >
+              Kerban
+            </ScrollFloat>
           </h1>
 
           <p className="text-lg sm:text-xl text-foreground/70 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -83,7 +156,7 @@ export default function HomePage() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4">
-            <Link href="/map" className="btn-primary text-base px-8 py-3">
+            <Link href="/map" className="btn-primary text-base px-8 py-3 cursor-target">
               <i className="bi bi-map mr-2" />Jelajahi Peta
             </Link>
             <Link href="/lapor" className="btn-outline text-base px-8 py-3 cursor-target">
@@ -127,8 +200,12 @@ export default function HomePage() {
               <div className="flex-shrink-0 relative group">
                 {/* Spinning ring */}
                 <div className="absolute -inset-3 rounded-full border-2 border-dashed border-emerald-400/20 dark:border-emerald-500/15 animate-[spin_30s_linear_infinite]" />
-                <div className="w-40 h-40 md:w-44 md:h-44 rounded-full bg-gradient-to-br from-emerald-600 via-emerald-500 to-emerald-400 flex items-center justify-center shadow-2xl shadow-emerald-500/25 ring-[5px] ring-white dark:ring-card relative z-10 group-hover:scale-105 transition-transform duration-500">
-                  <i className="bi bi-person-fill text-6xl md:text-7xl text-white" />
+                <div className="w-40 h-40 md:w-44 md:h-44 rounded-full shadow-2xl shadow-emerald-500/25 ring-[5px] ring-white dark:ring-card relative z-10 group-hover:scale-105 transition-transform duration-500 overflow-hidden">
+                  <img
+                    src="/images/pak-sigit.png"
+                    alt="Sigit Zuli Susanto - Kepala Dusun Kerban"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               </div>
 
@@ -184,26 +261,17 @@ export default function HomePage() {
             <p className="text-muted-foreground mt-2">Cerita di balik nama yang kita banggakan</p>
           </div>
 
-          {/* Photo */}
+          {/* Video */}
           <div className="mb-10 max-w-2xl mx-auto">
-            <div className="relative rounded-2xl overflow-hidden shadow-xl shadow-emerald-900/10 group">
-              <img
-                src="/images/tembang.jpg"
-                alt="Sejarah Dusun Kerban"
-                className="w-full h-64 md:h-80 object-cover group-hover:scale-105 transition-transform duration-700"
-                onError={(e) => {
-                  const el = e.currentTarget;
-                  el.style.display = "none";
-                  const parent = el.parentElement;
-                  if (parent && !parent.querySelector(".fallback")) {
-                    const fb = document.createElement("div");
-                    fb.className = "fallback w-full h-64 md:h-80 bg-gradient-to-br from-amber-100 via-orange-50 to-amber-100 dark:from-amber-950/40 dark:via-orange-950/30 dark:to-amber-950/40 flex items-center justify-center";
-                    fb.innerHTML = `<div class="text-center"><i class="bi bi-image text-5xl text-amber-400/50 dark:text-amber-500/30"></i><p class="text-sm text-muted-foreground mt-3">Tambahkan <code class="bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded text-xs">tembang.jpg</code> di <code class="bg-amber-100 dark:bg-amber-900/30 px-1.5 py-0.5 rounded text-xs">public/images/</code></p></div>`;
-                    parent.appendChild(fb);
-                  }
-                }}
+            <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl shadow-emerald-900/10">
+              <iframe
+                src="https://www.youtube.com/embed/FE9l3Jla8S8?si=kiYIdtJzAVbSKFPe"
+                title="YouTube video player"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
             </div>
           </div>
 
@@ -214,46 +282,8 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Two origin stories */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Story 1: Kerepan */}
-            <div className="group glass-card overflow-hidden hover:shadow-2xl hover:shadow-amber-900/5 transition-all duration-500">
-              <div className="h-2 bg-gradient-to-r from-amber-500 to-orange-400" />
-              <div className="p-8">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
-                    <i className="bi bi-sunset-fill text-amber-600 dark:text-amber-400 text-lg" />
-                  </div>
-                  <h3 className="font-bold text-lg text-emerald-950 dark:text-emerald-50">Versi "Kerepan"</h3>
-                </div>
-                <p className="text-muted-foreground leading-relaxed text-[0.95rem]">
-                  Kerban memiliki sejarah historis yang diyakini masyarakat sebagai sebuah nama dusun yang merefleksikan kebiasaan tradisi masyarakat Jawa. Orang Jawa meyakini kepercayaan terdahulu yakni <em>&ldquo;Ana Dewa Ngangklang Jagat&rdquo;</em> (Ada Dewa yang sedang berkeliling Dunia), yang mana ketika menjelang maghrib diharuskan setiap orang berhenti beraktivitas dan istirahat.
-                </p>
-                <p className="text-muted-foreground leading-relaxed text-[0.95rem] mt-3">
-                  Hal ini terus dilakukan sehingga menjadi suatu kebiasaan atau dalam Bahasa Jawa disebut <strong>&ldquo;Kerepan&rdquo;</strong>. <strong>Kerban</strong> sendiri merupakan simplifikasi dari kata <em>kerepan</em> yang berarti kebiasaan luhur yang dilakukan oleh orang Jawa terdahulu hingga sekarang.
-                </p>
-              </div>
-            </div>
-
-            {/* Story 2: Korban */}
-            <div className="group glass-card overflow-hidden hover:shadow-2xl hover:shadow-red-900/5 transition-all duration-500">
-              <div className="h-2 bg-gradient-to-r from-red-500 to-rose-400" />
-              <div className="p-8">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
-                    <i className="bi bi-shield-fill text-red-600 dark:text-red-400 text-lg" />
-                  </div>
-                  <h3 className="font-bold text-lg text-emerald-950 dark:text-emerald-50">Versi "Korban"</h3>
-                </div>
-                <p className="text-muted-foreground leading-relaxed text-[0.95rem]">
-                  Dalam versi sejarah yang lain, istilah Dusun Kerban juga dikaitkan dengan makna <strong>&ldquo;Korban&rdquo;</strong> atau <strong>&ldquo;Pengorbanan&rdquo;</strong> yang berkaitan dengan cerita perjuangan <strong>Pangeran Diponegoro</strong>.
-                </p>
-                <p className="text-muted-foreground leading-relaxed text-[0.95rem] mt-3">
-                  Menurut penuturan lokal, pada awal <strong>Perang Jawa tahun 1825</strong>, pasukan Pangeran Diponegoro pernah membangun perkemahan dan menggali sumber air di wilayah Desa Sumberarum (salah satunya di Kerban). Banyaknya korban pada saat perlawanan terhadap kolonial Belanda menjadikan dusun Kerban sangat identik dengan simbol pengorbanan para pejuang terdahulu.
-                </p>
-              </div>
-            </div>
-          </div>
+          {/* Timeline */}
+          <TimelineSection />
         </div>
       </section>
 
@@ -268,7 +298,7 @@ export default function HomePage() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {MENU_ITEMS.map((item) => (
-              <Link key={item.href} href={item.href} className={`group glass-card p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl ${item.href !== "/map" ? "cursor-target" : ""}`}>
+              <Link key={item.href} href={item.href} className="group glass-card p-6 hover:scale-105 transition-all duration-300 hover:shadow-xl cursor-target">
                 <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                   <i className={`bi ${item.icon} text-2xl text-white`} />
                 </div>
@@ -283,25 +313,75 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Produk Unggulan */}
+      {/* Produk Unggulan / UMKM */}
       <section className="py-16 px-4 bg-muted/50">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-12">
             <GradientText colors={["#4ade80", "#16a34a", "#4ade80"]} animationSpeed={5} className="text-xs font-medium uppercase tracking-wider">
-              Potensi
+              UMKM & Potensi
             </GradientText>
             <h2 className="text-3xl md:text-4xl font-bold mt-2">Produk Unggulan</h2>
+            <p className="text-muted-foreground mt-2 text-sm">Data UMKM berdasarkan peta Sarana Prasarana Dusun Kerban</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {PRODUK_UNGGULAN.map((p) => (
-              <div key={p.name} className="glass-card p-6 text-center hover:scale-105 transition-all duration-300">
-                <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-4">
-                  <i className={`bi ${p.icon} text-2xl text-emerald-600 dark:text-emerald-400`} />
+          {umkmList.length === 0 ? (
+            <p className="text-center text-muted-foreground py-8">Memuat data UMKM…</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {umkmList.map((p) => (
+                <div key={p.name} className="glass-card p-6 text-center hover:scale-105 transition-all duration-300">
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-4">
+                    <i className={`bi ${p.icon} text-2xl text-emerald-600 dark:text-emerald-400`} />
+                  </div>
+                  <h3 className="font-semibold mb-2">{p.name}</h3>
+                  <p className="text-sm text-muted-foreground">{p.desc}</p>
                 </div>
-                <h3 className="font-semibold mb-2">{p.name}</h3>
-                <p className="text-sm text-muted-foreground">{p.desc}</p>
-              </div>
-            ))}
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Peta — Card Swap Gallery */}
+      <section className="py-20 px-4 bg-gradient-to-b from-background via-muted/30 to-background">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            {/* Left: Text */}
+            <div>
+              <GradientText colors={["#4ade80", "#16a34a", "#4ade80"]} animationSpeed={5} className="text-xs font-medium uppercase tracking-wider">
+                Galeri Peta
+              </GradientText>
+              <h2 className="text-3xl md:text-4xl font-bold mt-2 mb-4">
+                Peta Dusun Kerban
+              </h2>
+              <p className="text-muted-foreground leading-relaxed mb-6">
+                Jelajahi koleksi peta tematik dan administrasi wilayah Dusun Kerban. Klik kartu untuk melihat ukuran penuh.
+              </p>
+              <Link
+                href="/peta"
+                className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-6 py-3 rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/25"
+              >
+                <i className="bi bi-collection" /> Lihat Semua Peta
+              </Link>
+            </div>
+
+            {/* Right: Bounce Cards */}
+            <div className="relative h-[420px] md:h-[480px] flex items-center justify-center">
+              <BounceCards
+                images={PETA_CARDS.map(c => c.img)}
+                containerWidth={450}
+                containerHeight={380}
+                animationDelay={0.3}
+                animationStagger={0.06}
+                enableHover
+                transformStyles={[
+                  'rotate(8deg) translate(-160px)',
+                  'rotate(3deg) translate(-75px)',
+                  'rotate(-2deg)',
+                  'rotate(-6deg) translate(75px)',
+                  'rotate(-4deg) translate(160px)'
+                ]}
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -375,24 +455,6 @@ export default function HomePage() {
                 semangat gotong royong, kami menghadirkan platform digital untuk
                 menghubungkan warga, pemerintah, dan seluruh pemangku kepentingan.
               </p>
-              <div className="grid grid-cols-2 gap-4 pt-2">
-                {[
-                  { icon: "bi-people-fill", label: "Komunitas", desc: "Berbasis warga" },
-                  { icon: "bi-shield-check", label: "Transparan", desc: "Data terbuka" },
-                  { icon: "bi-lightning-charge-fill", label: "Cepat", desc: "Real-time" },
-                  { icon: "bi-heart-fill", label: "Peduli", desc: "Lingkungan & sosial" },
-                ].map((item) => (
-                  <div key={item.label} className="flex items-start gap-3 p-3 rounded-xl hover:bg-emerald-50 dark:hover:bg-emerald-950/30 transition-colors group/item">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center shrink-0 group-hover/item:scale-110 transition-transform">
-                      <i className={`bi ${item.icon} text-lg text-emerald-600 dark:text-emerald-400`} />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-sm">{item.label}</p>
-                      <p className="text-xs text-muted-foreground">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
         </div>

@@ -13,10 +13,6 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       <div>
         <PublicNavbar />
         {children}
-        <TargetCursor
-          cursorColor="#4ade80"
-          cursorColorOnTarget="#22c55e"
-        />
       </div>
     );
   }

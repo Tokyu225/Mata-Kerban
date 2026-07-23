@@ -126,7 +126,12 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
     };
 
     const initialOffset = getOffset();
-    gsap.set(cursor, {
+// Hide corner brackets by default — only show on target hover
+      if (cornersRef.current) {
+        gsap.set(cornersRef.current, { opacity: 0 });
+      }
+
+      gsap.set(cursor, {
       xPercent: -50,
       yPercent: -50,
       x: window.innerWidth / 2 - initialOffset.x,
@@ -252,6 +257,8 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
 
       activeTarget = target;
       const corners = Array.from(cornersRef.current);
+      // Show corner brackets when hovering a target
+      gsap.to(corners, { opacity: 1, duration: 0.15, ease: "power2.out" });
       corners.forEach((corner) => gsap.killTweensOf(corner, "x,y"));
 
       gsap.killTweensOf(cursorRef.current, "rotation");
@@ -348,6 +355,8 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
               overwrite: "auto",
             });
           });
+          // Hide corner brackets when leaving target
+          gsap.to(corners, { opacity: 0, duration: 0.25, ease: "power2.out" });
         }
 
         gsap.set(activeStrengthRef.current, {
@@ -449,19 +458,19 @@ const TargetCursor: React.FC<TargetCursorProps> = ({
         style={{ backgroundColor: cursorColor }}
       />
       <div
-        className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] -translate-x-[150%] -translate-y-[150%] border-r-0 border-b-0"
+        className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] -translate-x-[150%] -translate-y-[150%] border-r-0 border-b-0 opacity-0"
         style={{ borderColor: cursorColor }}
       />
       <div
-        className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] translate-x-1/2 -translate-y-[150%] border-l-0 border-b-0"
+        className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] translate-x-1/2 -translate-y-[150%] border-l-0 border-b-0 opacity-0"
         style={{ borderColor: cursorColor }}
       />
       <div
-        className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] translate-x-1/2 translate-y-1/2 border-l-0 border-t-0"
+        className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] translate-x-1/2 translate-y-1/2 border-l-0 border-t-0 opacity-0"
         style={{ borderColor: cursorColor }}
       />
       <div
-        className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] -translate-x-[150%] translate-y-1/2 border-r-0 border-t-0"
+        className="target-cursor-corner absolute top-1/2 left-1/2 w-3 h-3 border-[3px] -translate-x-[150%] translate-y-1/2 border-r-0 border-t-0 opacity-0"
         style={{ borderColor: cursorColor }}
       />
     </div>

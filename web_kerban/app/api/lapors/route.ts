@@ -11,8 +11,8 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   const body = await req.json();
 
-  // Verify Turnstile token (canonical siteverify)
-  if (body.turnstileToken) {
+  // Verify Turnstile token
+  if (body.turnstileToken && process.env.TURNSTILE_SECRET) {
     const turnstileResult = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
       {

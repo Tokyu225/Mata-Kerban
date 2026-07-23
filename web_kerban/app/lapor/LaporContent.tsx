@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Script from "next/script";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import Stepper, { Step } from "@/components/reactbits/Stepper";
 
 // Fix Leaflet default marker icons in Next.js/Webpack
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -77,6 +78,15 @@ export default function LaporContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    await submitReport();
+  };
+
+  const submitReport = async () => {
+    // Validate before sending
+    if (!coords) {
+      setMessage({ type: "error", text: "Silakan pilih lokasi di peta terlebih dahulu." });
+      return;
+    }
     setLoading(true);
     setMessage(null);
     let fotoUrl = null;
@@ -86,8 +96,15 @@ export default function LaporContent() {
       const json = await uploadRes.json();
       if (uploadRes.ok) fotoUrl = json.url;
     }
-    const body: any = { judul, namaPelapor: namaPelapor || null, deskripsi, kategori: kategori || null, foto: fotoUrl, lat: parseFloat(lat), lng: parseFloat(lng) };
-    if (mode === "simpel") { body.judul = "Laporan Warga"; body.lat = coords?.lat || parseFloat(lat); body.lng = coords?.lng || parseFloat(lng); }
+    const body: any = {
+      judul: mode === "simpel" ? "Laporan Warga" : (judul || "Laporan Warga"),
+      namaPelapor: namaPelapor || null,
+      deskripsi: deskripsi || "-",
+      kategori: kategori || null,
+      foto: fotoUrl,
+      lat: coords.lat,
+      lng: coords.lng,
+    };
 
     // Grab Turnstile token
     const turnstileInput = document.querySelector<HTMLInputElement>('input[name="cf-turnstile-response"]');
@@ -100,7 +117,10 @@ export default function LaporContent() {
       setMessage({ type: "success", text: "Laporan berhasil dikirim!" });
       setNamaPelapor(""); setJudul(""); setDeskripsi(""); setKategori(""); setFoto(null);
       setTimeout(() => window.location.reload(), 1500);
-    } else { setMessage({ type: "error", text: "Gagal mengirim laporan" }); }
+    } else {
+      const err = await res.json().catch(() => ({}));
+      setMessage({ type: "error", text: err?.error || "Gagal mengirim laporan" });
+    }
     setLoading(false);
   };
 
@@ -123,31 +143,112 @@ export default function LaporContent() {
             <button onClick={() => setMode("lengkap")} className={`flex-1 py-2 rounded-lg text-sm font-medium transition-all ${mode === "lengkap" ? "bg-background shadow-sm" : "text-muted-foreground"}`}><i className="bi bi-list-ul mr-1.5" />Lengkap</button>
           </div>
           {message && <div className={`text-sm rounded-xl p-3 mb-4 ${message.type === "success" ? "bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 text-green-600" : "bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600"}`}>{message.text}</div>}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {mode === "simpel" ? (
-              <>
-                <div><label className="block text-sm font-medium mb-1">Nama (opsional)</label><input value={namaPelapor} onChange={(e) => setNamaPelapor(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Nama Anda" /></div>
-                <div><label className="block text-sm font-medium mb-1">Deskripsi Laporan *</label><textarea value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} rows={4} className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Jelaskan laporan Anda..." required /></div>
-                <p className="text-xs text-muted-foreground"><i className="bi bi-geo-alt mr-1" />Klik pada peta untuk menentukan lokasi, atau gunakan lokasi Anda saat ini.</p>
-              </>
-            ) : (
-              <>
-                <div><label className="block text-sm font-medium mb-1">Judul *</label><input value={judul} onChange={(e) => setJudul(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Judul laporan" required /></div>
-                <div><label className="block text-sm font-medium mb-1">Nama Pelapor</label><input value={namaPelapor} onChange={(e) => setNamaPelapor(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Nama Anda" /></div>
-                <div><label className="block text-sm font-medium mb-1">Deskripsi *</label><textarea value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} rows={3} className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Jelaskan laporan Anda..." required /></div>
-                <div><label className="block text-sm font-medium mb-1">Kategori</label><select value={kategori} onChange={(e) => setKategori(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none"><option value="">Pilih kategori</option>{KATEGORI.map((k) => <option key={k} value={k}>{k}</option>)}</select></div>
-                <div><label className="block text-sm font-medium mb-1">Foto</label><input type="file" accept="image/*" onChange={(e) => setFoto(e.target.files?.[0] || null)} className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-50 dark:file:bg-primary-900/30 file:text-primary-600 dark:file:text-primary-400" /></div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div><label className="block text-sm font-medium mb-1">Latitude</label><input value={lat} onChange={(e) => setLat(e.target.value)} className="w-full px-3 py-2 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none text-sm" placeholder="Klik peta" required /></div>
-                  <div><label className="block text-sm font-medium mb-1">Longitude</label><input value={lng} onChange={(e) => setLng(e.target.value)} className="w-full px-3 py-2 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none text-sm" placeholder="Klik peta" required /></div>
+
+          {mode === "simpel" ? (
+            <Stepper
+              backButtonText="Kembali"
+              nextButtonText="Lanjut"
+              onFinalStepCompleted={submitReport}
+              stepContainerClassName="justify-center"
+            >
+              <Step>
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-3">
+                    <i className="bi bi-geo-alt-fill text-emerald-600 text-xl" />
+                  </div>
+                  <p className="font-semibold text-[#1a3d2a] dark:text-[#c8e8d0] mb-1">Tentukan Lokasi</p>
+                  <p className="text-xs text-muted-foreground mb-4">
+                    Klik pada peta untuk memilih titik lokasi laporan
+                  </p>
+                  {coords ? (
+                    <div className="bg-emerald-50 dark:bg-emerald-950/20 rounded-xl p-4 border border-emerald-200/50 dark:border-emerald-800/30">
+                      <i className="bi bi-check-circle-fill text-emerald-600 text-2xl block mb-1" />
+                      <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">
+                        Lokasi Terpilih
+                      </p>
+                      <p className="text-xs text-emerald-600/70 dark:text-emerald-400/70 mt-0.5 font-mono">
+                        {coords.lat.toFixed(6)}, {coords.lng.toFixed(6)}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="bg-amber-50 dark:bg-amber-950/20 rounded-xl p-4 border border-amber-200/50 dark:border-amber-800/30">
+                      <i className="bi bi-hand-index-thumb text-amber-500 text-2xl block mb-1" />
+                      <p className="text-sm font-medium text-amber-700 dark:text-amber-300">
+                        Belum Ada Lokasi
+                      </p>
+                      <p className="text-xs text-amber-600/70 dark:text-amber-400/70 mt-0.5">
+                        Silakan klik titik di peta
+                      </p>
+                    </div>
+                  )}
                 </div>
-              </>
-            )}
-            <div ref={turnstileRef} className="cf-turnstile flex justify-center my-2" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} data-action="turnstile-spin-v2" />
-            <button type="submit" disabled={loading || !coords} className="w-full btn-primary py-3 disabled:opacity-50 disabled:cursor-not-allowed">
-              {loading ? <span className="flex items-center justify-center gap-2"><span className="loader-spinner w-4 h-4 border-2" />Mengirim...</span> : <><i className="bi bi-send mr-2" />Kirim Laporan</>}
-            </button>
-          </form>
+              </Step>
+              <Step>
+                <div>
+                  <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-3">
+                    <i className="bi bi-chat-left-text-fill text-emerald-600 text-xl" />
+                  </div>
+                  <p className="font-semibold text-[#1a3d2a] dark:text-[#c8e8d0] text-center mb-1">Detail Laporan</p>
+                  <p className="text-xs text-muted-foreground text-center mb-4">Isi informasi laporan Anda</p>
+                  <textarea
+                    value={deskripsi}
+                    onChange={(e) => setDeskripsi(e.target.value)}
+                    rows={3}
+                    className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-emerald-500 outline-none text-sm mb-3"
+                    placeholder="Jelaskan laporan Anda..."
+                  />
+                  <select
+                    value={kategori}
+                    onChange={(e) => setKategori(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-emerald-500 outline-none text-sm"
+                  >
+                    <option value="">Pilih kategori</option>
+                    {KATEGORI.map((k) => <option key={k} value={k}>{k}</option>)}
+                  </select>
+                </div>
+              </Step>
+              <Step>
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center mx-auto mb-3">
+                    <i className="bi bi-send-fill text-emerald-600 text-xl" />
+                  </div>
+                  <p className="font-semibold text-[#1a3d2a] dark:text-[#c8e8d0] mb-1">Kirim Laporan</p>
+                  <input
+                    value={namaPelapor}
+                    onChange={(e) => setNamaPelapor(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-emerald-500 outline-none text-sm mb-4"
+                    placeholder="Nama Anda (opsional)"
+                  />
+                  <p className="text-xs text-muted-foreground mb-4">
+                    {coords ? "Laporan siap dikirim — klik Complete" : "Kembali untuk memilih lokasi di peta"}
+                  </p>
+                  <div ref={turnstileRef} className="cf-turnstile flex justify-center mb-3" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} data-action="turnstile-spin-v2" />
+                  {loading && (
+                    <div className="flex items-center justify-center gap-2 text-sm text-emerald-600 mt-2">
+                      <span className="loader-spinner w-4 h-4 border-2" />
+                      Mengirim...
+                    </div>
+                  )}
+                </div>
+              </Step>
+            </Stepper>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div><label className="block text-sm font-medium mb-1">Judul *</label><input value={judul} onChange={(e) => setJudul(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Judul laporan" required /></div>
+              <div><label className="block text-sm font-medium mb-1">Nama Pelapor</label><input value={namaPelapor} onChange={(e) => setNamaPelapor(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Nama Anda" /></div>
+              <div><label className="block text-sm font-medium mb-1">Deskripsi *</label><textarea value={deskripsi} onChange={(e) => setDeskripsi(e.target.value)} rows={3} className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none" placeholder="Jelaskan laporan Anda..." required /></div>
+              <div><label className="block text-sm font-medium mb-1">Kategori</label><select value={kategori} onChange={(e) => setKategori(e.target.value)} className="w-full px-4 py-2.5 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none"><option value="">Pilih kategori</option>{KATEGORI.map((k) => <option key={k} value={k}>{k}</option>)}</select></div>
+              <div><label className="block text-sm font-medium mb-1">Foto</label><input type="file" accept="image/*" onChange={(e) => setFoto(e.target.files?.[0] || null)} className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary-50 dark:file:bg-primary-900/30 file:text-primary-600 dark:file:text-primary-400" /></div>
+              <div className="grid grid-cols-2 gap-3">
+                <div><label className="block text-sm font-medium mb-1">Latitude</label><input value={lat} onChange={(e) => setLat(e.target.value)} className="w-full px-3 py-2 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none text-sm" placeholder="Klik peta" required /></div>
+                <div><label className="block text-sm font-medium mb-1">Longitude</label><input value={lng} onChange={(e) => setLng(e.target.value)} className="w-full px-3 py-2 rounded-xl border border-border bg-background focus:ring-2 focus:ring-primary-500 outline-none text-sm" placeholder="Klik peta" required /></div>
+              </div>
+              <div ref={turnstileRef} className="cf-turnstile flex justify-center my-2" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} data-action="turnstile-spin-v2" />
+              <button type="submit" disabled={loading || !coords} className="w-full btn-primary py-3 disabled:opacity-50 disabled:cursor-not-allowed">
+                {loading ? <span className="flex items-center justify-center gap-2"><span className="loader-spinner w-4 h-4 border-2" />Mengirim...</span> : <><i className="bi bi-send mr-2" />Kirim Laporan</>}
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </div>

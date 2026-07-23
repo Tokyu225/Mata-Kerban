@@ -23,13 +23,25 @@ export function PublicFooter() {
           <div>
             <h4 className="font-semibold mb-3">Kontak</h4>
             <div className="space-y-2 text-sm text-muted-foreground">
-              <p className="flex items-center gap-2"><i className="bi bi-geo-alt" /> Dusun Kerban, Desa setempat</p>
-              <p className="flex items-center gap-2"><i className="bi bi-envelope" /> info@dusunkerban.my.id</p>
+              <a
+                href="https://www.google.com/maps/search/?api=1&query_place_id=ChIJAaNB-8-Nei4R1IToJK5Jo9I"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-2 hover:text-primary-600 dark:hover:text-primary-400 transition-colors"
+              >
+                <i className="bi bi-geo-alt mt-0.5" />
+                <span>
+                  Dusun Kerban, Sumberarum, Kec. Tempuran,
+                  <br />
+                  Kab. Magelang, Jawa Tengah
+                </span>
+              </a>
             </div>
           </div>
         </div>
-        <div className="border-t border-border mt-8 pt-6 text-center text-xs text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Dusun Kerban. v2.0 · Next.js · HNDH</p>
+        <div className="border-t border-border mt-8 pt-6 text-center text-xs text-muted-foreground space-y-1">
+          <p>&copy; 2026 Dusun Kerban. All Rights Reserved.</p>
+          <p>Website dikelola oleh Pengurus Dusun Kerban &amp; Tim PKL UGM 2026.</p>
         </div>
       </div>
     </footer>
