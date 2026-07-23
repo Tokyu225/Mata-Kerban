@@ -283,58 +283,6 @@ export default function SejarahPage() {
       {/* Timeline */}
       <TimelineSection />
 
-      {/* Gallery */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto max-w-5xl">
-          <div className="text-center mb-12">
-            <span className="inline-block bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-semibold tracking-widest uppercase px-5 py-1.5 rounded-full mb-5">
-              Galeri
-            </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-emerald-950 dark:text-emerald-50">
-              Dokumentasi Dusun
-            </h2>
-            <p className="text-muted-foreground mt-2">Potret kehidupan dan budaya Dusun Kerban</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {[
-              { src: "/images/tembang.jpg", label: "Tembang & Tradisi", icon: "bi-music-note" },
-              { src: "/images/aboutus.jpeg", label: "Masyarakat Kerban", icon: "bi-people-fill" },
-              { src: "/images/har.jpeg", label: "Generasi Penerus", icon: "bi-person-heart" },
-            ].map((img, idx) => (
-              <div
-                key={idx}
-                className="group relative rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-500 aspect-[4/3]"
-              >
-                <img
-                  src={img.src}
-                  alt={img.label}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                  onError={(e) => {
-                    const el = e.currentTarget;
-                    el.style.display = "none";
-                    const parent = el.parentElement;
-                    if (parent && !parent.querySelector(".fallback")) {
-                      const fb = document.createElement("div");
-                      fb.className = "fallback absolute inset-0 bg-gradient-to-br from-amber-100 via-orange-50 to-amber-100 dark:from-amber-950/40 dark:via-orange-950/30 dark:to-amber-950/40 flex items-center justify-center";
-                      fb.innerHTML = `<div class="text-center"><i class="bi bi-image text-4xl text-amber-400/50 dark:text-amber-500/30"></i></div>`;
-                      parent.appendChild(fb);
-                    }
-                  }}
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-                  <div className="flex items-center gap-2 text-white">
-                    <i className={`bi ${img.icon}`} />
-                    <span className="text-sm font-medium">{img.label}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section className="py-16 px-4 bg-gradient-to-br from-amber-50 via-white to-emerald-50 dark:from-amber-950/20 dark:via-background dark:to-emerald-950/20">
         <div className="container mx-auto max-w-3xl text-center">

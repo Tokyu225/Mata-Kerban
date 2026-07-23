@@ -12,7 +12,3 @@ export function formatDate(date: Date | string): string {
     year: "numeric",
   }).format(new Date(date));
 }
-
-export function generateOtp(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
-}

@@ -16,13 +16,7 @@ new #[Layout('layouts.guest')] class extends Component
     {
         $this->validate();
 
-        $result = $this->form->authenticate();
-
-        // Redirect to OTP verification if needed
-        if ($result === 'otp') {
-            $this->redirect(route('verify-otp'), navigate: true);
-            return;
-        }
+        $this->form->authenticate();
 
         Session::regenerate();
 

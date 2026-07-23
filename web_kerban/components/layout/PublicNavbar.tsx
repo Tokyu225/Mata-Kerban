@@ -64,7 +64,7 @@ export function PublicNavbar() {
               </button>
             )}
             {session ? (
-              <button onClick={() => signOut()} className="p-2 rounded-xl text-foreground/60 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 hover:scale-110 active:scale-90 transition-all duration-300" aria-label="Logout">
+              <button onClick={() => signOut({ callbackUrl: "/" })} className="p-2 rounded-xl text-foreground/60 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 hover:scale-110 active:scale-90 transition-all duration-300" aria-label="Logout">
                 <i className="bi bi-box-arrow-right text-sm" />
               </button>
             ) : (

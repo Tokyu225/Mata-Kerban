@@ -30,19 +30,9 @@ const QUESTIONS = [
     a: 1,
   },
   {
-    q: "Kode OTP yang dikirim saat verifikasi terdiri dari berapa digit?",
-    o: ["4 digit", "5 digit", "6 digit", "8 digit"],
-    a: 2,
-  },
-  {
     q: "Apa jenis basemap yang tersedia di peta?",
     o: ["Satelit saja", "Jalan saja", "Satelit, Jalan, dan Topografi", "Hanya Topografi"],
     a: 2,
-  },
-  {
-    q: "Berapa lama masa berlaku kode OTP?",
-    o: ["1 menit", "5 menit", "10 menit", "30 menit"],
-    a: 1,
   },
   {
     q: "Apa manfaat utama WebGIS untuk Dusun Kerban?",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Script from "next/script";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -18,6 +19,7 @@ export default function LaporContent() {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<L.Marker | null>(null);
+  const turnstileRef = useRef<HTMLDivElement>(null);
   const [mode, setMode] = useState<"simpel" | "lengkap">("simpel");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -86,6 +88,13 @@ export default function LaporContent() {
     }
     const body: any = { judul, namaPelapor: namaPelapor || null, deskripsi, kategori: kategori || null, foto: fotoUrl, lat: parseFloat(lat), lng: parseFloat(lng) };
     if (mode === "simpel") { body.judul = "Laporan Warga"; body.lat = coords?.lat || parseFloat(lat); body.lng = coords?.lng || parseFloat(lng); }
+
+    // Grab Turnstile token
+    const turnstileInput = document.querySelector<HTMLInputElement>('input[name="cf-turnstile-response"]');
+    if (turnstileInput?.value) {
+      body.turnstileToken = turnstileInput.value;
+    }
+
     const res = await fetch("/api/lapors", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (res.ok) {
       setMessage({ type: "success", text: "Laporan berhasil dikirim!" });
@@ -97,6 +106,11 @@ export default function LaporContent() {
 
   return (
     <div className="min-h-[80vh] flex flex-col lg:flex-row animate-fade-in">
+      <Script
+        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+        async
+        defer
+      />
       <div className="lg:w-3/5 h-[40vh] lg:h-[calc(100vh-5rem)] lg:sticky lg:top-20">
         <div ref={mapContainerRef} className="w-full h-full" />
       </div>
@@ -129,6 +143,7 @@ export default function LaporContent() {
                 </div>
               </>
             )}
+            <div ref={turnstileRef} className="cf-turnstile flex justify-center my-2" data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY} data-action="turnstile-spin-v2" />
             <button type="submit" disabled={loading || !coords} className="w-full btn-primary py-3 disabled:opacity-50 disabled:cursor-not-allowed">
               {loading ? <span className="flex items-center justify-center gap-2"><span className="loader-spinner w-4 h-4 border-2" />Mengirim...</span> : <><i className="bi bi-send mr-2" />Kirim Laporan</>}
             </button>

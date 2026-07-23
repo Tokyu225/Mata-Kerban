@@ -30,28 +30,13 @@ new #[Layout('layouts.guest')] class extends Component
 
         $validated['password'] = Hash::make($validated['password']);
 
-        $user = User::create($validated);
-
-        // Generate OTP
-        $otp = $user->generateOtp();
-
-        // Send real email notification
-        try {
-            $user->notify(new \App\Notifications\OtpNotification($otp));
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Gagal kirim email OTP: ' . $e->getMessage());
-        }
-
-        // Log OTP as backup (appears in storage/logs/laravel.log)
-        \Illuminate\Support\Facades\Log::info("OTP untuk {$user->email}: {$otp}");
-
-        // Also flash to session as fallback (dev convenience)
-        session(['otp_email' => $user->email, 'otp_display' => $otp]);
+        $user = User::create([...$validated, 'email_verified_at' => now()]);
 
         event(new Registered($user));
 
-        // Redirect to OTP verification
-        $this->redirect(route('verify-otp'), navigate: true);
+        Auth::login($user);
+
+        $this->redirect(route('dashboard', absolute: false), navigate: true);
     }
 }; ?>
 

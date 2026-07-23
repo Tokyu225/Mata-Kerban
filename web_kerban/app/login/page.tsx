@@ -20,11 +20,16 @@ function LoginFormInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const verified = searchParams.get("verified");
+  const registered = searchParams.get("registered");
   const emailParam = searchParams.get("email");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(
-    verified === "1" ? "Email berhasil diverifikasi! Silakan masuk." : ""
+    verified === "1"
+      ? "Email berhasil diverifikasi! Silakan masuk."
+      : registered === "1"
+      ? "Akun berhasil dibuat! Silakan masuk."
+      : ""
   );
 
   const {
@@ -40,20 +45,6 @@ function LoginFormInner() {
     setLoading(true);
     setError("");
     setSuccess("");
-
-    const checkRes = await fetch("/api/auth/check-verification", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: data.email }),
-    });
-
-    if (checkRes.ok) {
-      const checkData = await checkRes.json();
-      if (!checkData.verified) {
-        router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
-        return;
-      }
-    }
 
     const result = await signIn("credentials", {
       email: data.email,
