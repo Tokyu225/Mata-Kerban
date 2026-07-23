@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Script from "next/script";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,23 +17,10 @@ const registerSchema = z.object({
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
-declare global {
-  interface Window {
-    turnstile: {
-      render: (container: string | HTMLElement, options: Record<string, unknown>) => string;
-      reset: (widgetId: string) => void;
-      remove: (widgetId: string) => void;
-    };
-  }
-}
-
 export default function RegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [turnstileLoaded, setTurnstileLoaded] = useState(false);
-  const turnstileRef = useRef<string | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   const {
     register,
@@ -45,56 +31,20 @@ export default function RegisterPage() {
     defaultValues: { role: "warga" },
   });
 
-  const renderTurnstile = useCallback(() => {
-    if (containerRef.current && window.turnstile && !turnstileRef.current) {
-      turnstileRef.current = window.turnstile.render(containerRef.current, {
-        sitekey: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
-        action: "turnstile-spin-v2",
-        theme: "auto",
-        size: "normal",
-      });
-    }
-  }, []);
-
-  const resetTurnstile = () => {
-    if (turnstileRef.current && window.turnstile) {
-      window.turnstile.reset(turnstileRef.current);
-    }
-  };
-
-  const getTurnstileToken = (): string => {
-    if (!containerRef.current) return "";
-    const iframe = containerRef.current.querySelector("iframe");
-    if (!iframe) return "";
-    const input = iframe.parentElement?.querySelector<HTMLInputElement>(
-      'input[name="cf-turnstile-response"]'
-    );
-    return input?.value || "";
-  };
-
   const onSubmit = async (data: RegisterForm) => {
     setLoading(true);
     setError("");
 
-    const turnstileToken = getTurnstileToken();
-
-    if (!turnstileToken) {
-      setError("Silakan selesaikan verifikasi keamanan.");
-      setLoading(false);
-      return;
-    }
-
     const res = await fetch("/api/auth/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...data, turnstileToken }),
+      body: JSON.stringify(data),
     });
 
     const json = await res.json();
 
     if (!res.ok) {
       setError(json.error || "Gagal mendaftar");
-      resetTurnstile();
       setLoading(false);
       return;
     }
@@ -104,15 +54,6 @@ export default function RegisterPage() {
 
   return (
     <>
-      <Script
-        src="https://challenges.cloudflare.com/turnstile/v0/api.js"
-        async
-        defer
-        onLoad={() => {
-          setTurnstileLoaded(true);
-          renderTurnstile();
-        }}
-      />
       <div className="min-h-[80vh] flex items-center justify-center px-4 py-20">
         <div className="glass-card p-8 w-full max-w-md animate-slide-up">
           <div className="text-center mb-8">
@@ -179,9 +120,6 @@ export default function RegisterPage() {
                 <option value="endministrator">Administrator</option>
               </select>
             </div>
-
-            {/* Cloudflare Turnstile */}
-            <div ref={containerRef} className="cf-turnstile flex justify-center" data-action="turnstile-spin-v2" />
 
             <button
               type="submit"
